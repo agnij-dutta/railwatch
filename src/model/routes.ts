@@ -2,7 +2,7 @@
 // and ends with rupees in an Indian bank account.
 
 import { Flow, gstOnConversion, sellIntoBids } from "./engine";
-import type { Headline, ModelInputs, ModelOptions, ProviderQuote, RouteFamily, RouteResult } from "./types";
+import type { Headline, ModeledParams, ModelInputs, ModelOptions, ProviderQuote, RouteFamily, RouteResult } from "./types";
 
 const fmtUsd = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const fmtInr = (n: number) => `₹${n.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
@@ -93,7 +93,12 @@ export function providerRoute(q: ProviderQuote, amountUsd: number, midRate: numb
   });
 }
 
-/** Classic SWIFT: USD wire from a US bank, intermediary deduction, converted to INR by the receiving Indian bank, GST on the conversion. */
+/**
+ * Classic SWIFT: USD wire from a US bank, intermediary deduction, converted to INR by the receiving Indian bank, GST on the conversion.
+ * The receiving bank's rate is SBI's quote from the Wise feed (source country IN), used as a proxy for an Indian bank's
+ * TT buying rate. SBI's own upfront fee in that quote is ignored because it applies to SBI as a sender, not a receiver.
+ * GST under Rule 32(2)(b) applies because the conversion happens in India; provider routes pay out in INR and skip it.
+ */
 export function swiftUsdRoute(inputs: ModelInputs, amountUsd: number): RouteResult | null {
   const { params: p, midRate } = inputs;
   const sbi = findQuote(inputs, amountUsd, "state-bank-of-india");
@@ -246,9 +251,9 @@ export function stablecoinPath(
       category: "fee",
       status: "modeled",
       sourceIds: ["coindcx-deposit"],
-      detail: "Crypto deposits are free on Indian exchanges",
+      detail: `${fmtUsd(p.exchangeDepositFeeUsd)} to deposit USDC (published schedule)`,
     },
-    0,
+    p.exchangeDepositFeeUsd,
   );
 
   const tdsLegs: number[] = []; // INR value of each TDS deduction, for the refund lens
@@ -279,6 +284,7 @@ export function stablecoinPath(
       },
       swapFee,
     );
+    const swapFeeGst = swapFee * p.gstOnFeesRate;
     flow.deduct(
       {
         id: "swap-fee-gst",
@@ -286,20 +292,21 @@ export function stablecoinPath(
         category: "tax",
         status: "statutory",
         sourceIds: ["gst-on-fees"],
-        detail: `${pct(p.gstRate)} of the swap fee`,
+        detail: `${pct(p.gstOnFeesRate)} of the swap fee`,
       },
-      swapFee * p.gstRate,
+      swapFeeGst,
     );
-    const swapTds = fill.proceeds * p.tdsRate;
+    // TDS base is the consideration net of the exchange's fee and the GST on it (CBDT Circular 13/2022).
+    const swapTds = (fill.proceeds - swapFee - swapFeeGst) * p.tdsRate;
     tdsLegs.push(swapTds * midRate);
     flow.deduct(
       {
         id: "swap-tds",
-        label: "1% TDS on the swap (crypto to crypto)",
+        label: `${pct(p.tdsRate)} TDS on the swap (crypto to crypto)`,
         category: "tax",
         status: "statutory",
         sourceIds: ["tds-194s"],
-        detail: `${pct(p.tdsRate)} TDS applies to every VDA transfer, including swaps`,
+        detail: `${pct(p.tdsRate)} of the swap proceeds net of fee and GST. TDS applies to every VDA transfer, including swaps`,
       },
       swapTds,
     );
@@ -323,6 +330,7 @@ export function stablecoinPath(
     () => ({ asset: "INR", qty: gross }),
   );
   const fee = gross * p.exchangeTakerFeeRate;
+  const feeGst = fee * p.gstOnFeesRate;
   flow
     .deduct(
       {
@@ -342,20 +350,25 @@ export function stablecoinPath(
         category: "tax",
         status: "statutory",
         sourceIds: ["gst-on-fees"],
-        detail: `${pct(p.gstRate)} of the trading fee`,
+        detail: `${pct(p.gstOnFeesRate)} of the trading fee`,
       },
-      fee * p.gstRate,
+      feeGst,
     );
-  const tds = gross * p.tdsRate;
+  // Section 194S TDS. Per CBDT Circular 13/2022 (22 June 2022), tax is withheld on the consideration
+  // excluding GST and the exchange's own charges, so the base is gross proceeds minus fee minus GST on fee.
+  // The model always withholds; below the annual threshold in 194S(1) (₹10,000, or ₹50,000 for a
+  // "specified person") no TDS is due, which only matters at the smallest amounts.
+  const tdsBase = gross - fee - feeGst;
+  const tds = tdsBase * p.tdsRate;
   tdsLegs.push(tds);
   flow.deduct(
     {
       id: "tds",
-      label: "1% TDS on sale (Section 194S)",
+      label: `${pct(p.tdsRate)} TDS on sale (Section 194S)`,
       category: "tax",
       status: "statutory",
       sourceIds: ["tds-194s"],
-      detail: `${pct(p.tdsRate)} of ${fmtInr(Math.round(gross))}, withheld by the exchange`,
+      detail: `${pct(p.tdsRate)} of ${fmtInr(Math.round(tdsBase))} (proceeds net of fee and GST), withheld by the exchange`,
     },
     tds,
   );
@@ -372,12 +385,21 @@ export function stablecoinPath(
   );
 
   if (reserveVdaTax) {
+    // Section 115BBH: income from transferring a VDA is taxed at a flat rate, computed as full sale
+    // consideration minus cost of acquisition only. No deduction for trading fees, GST or network fees
+    // (115BBH(2)(a)), and a loss cannot be set off against anything (115BBH(2)(b)), hence the floor at zero.
+    // Cess is a percentage of the tax (Finance Act, 2018), so the effective rate is 30% x 1.04 = 31.2%.
+    // Cost basis is the INR value of the USDC at mid-market on the day it was bought. Simplifications:
+    //   - the USDC to USDT swap is itself a taxable transfer; its own gain or loss is tiny at a ~1.0001 book
+    //     and is folded into the final sale here, which can understate tax by a few rupees;
+    //   - income-tax surcharge at high incomes is ignored;
+    //   - if the USDC is payment for services, it is slab-rate income on receipt instead (see caveats).
     const gain = Math.max(0, gross - costBasisInr);
     const rate = p.vdaTaxRate * (1 + p.vdaCessRate);
     flow.deduct(
       {
         id: "vda-tax",
-        label: "30% VDA tax on the gain, plus cess (reserve)",
+        label: `${pct(p.vdaTaxRate)} VDA tax on the gain, plus ${pct(p.vdaCessRate)} cess (reserve)`,
         category: "tax",
         status: "statutory",
         sourceIds: ["vda-tax-115bbh"],
@@ -412,18 +434,21 @@ export function stablecoinPath(
     family: "stablecoin",
     amountUsd,
     quoteCollectedAt: book.fetchedAt,
-    caveats: STABLECOIN_CAVEATS,
+    caveats: stablecoinCaveats(p),
   });
 }
 
-export const STABLECOIN_CAVEATS = [
+/** Caveats shown under every stablecoin route. Rates are read from params so they track sources.yaml. */
+export function stablecoinCaveats(p: ModeledParams): string[] {
+  return [
   "Indian exchanges price stablecoins above the mid-market rate. That premium is a market quirk driven by tax friction and limited ramps, not a fee advantage, and it can shrink or vanish.",
-  "Profit on selling a virtual digital asset is taxed at a flat 30% plus 4% cess, with no deduction for fees and no loss set-off. We reserve that tax on any gain over a mid-market cost basis. If the USDC is received as payment for services, the treatment differs: talk to a CA.",
-  "1% TDS is withheld on every sale and swap. It is credited against your tax or refunded only when you file, so it is a real cash cost until then.",
+  `Profit on selling a virtual digital asset is taxed at a flat ${pct(p.vdaTaxRate)} plus ${pct(p.vdaCessRate)} cess, with no deduction for fees and no loss set-off. We reserve that tax on any gain over a mid-market cost basis. If the USDC is received as payment for services, the treatment differs: talk to a CA.`,
+  `${pct(p.tdsRate)} TDS is withheld on every sale and swap. It is credited against your tax or refunded only when you file, so it is a real cash cost until then.`,
   "No FIRC or FIRA is issued. Exporters cannot use this route as proof of inward remittance for GST export of services, and it does not count as a foreign inward remittance under FEMA reporting.",
   "Both ends require full KYC. Indian exchanges must be registered with FIU-IND and may ask for the source of external deposits. Some Indian banks have frozen accounts receiving exchange withdrawals.",
   "Sending the wrong token or network to an exchange address is usually unrecoverable. Confirm the exchange supports deposits of that token on that network first.",
-];
+  ];
+}
 
 export function findQuote(inputs: ModelInputs, amountUsd: number, alias: string): ProviderQuote | null {
   const quotes = inputs.providerQuotes[String(amountUsd)];
@@ -451,6 +476,7 @@ export const HEADLINE_SWIFT_ROUTE = "chase";
 export function buildHeadline(routes: RouteResult[], amountUsd: number): Headline {
   const swift = routes.find((r) => r.id === HEADLINE_SWIFT_ROUTE) ?? routes.filter((r) => r.family === "bank")[0];
   const licensed = routes.filter((r) => r.family !== "stablecoin");
+  if (!swift || licensed.length === 0) throw new Error("buildHeadline: need at least one bank or provider route");
   const best = licensed.reduce((a, b) => (b.receivedInr > a.receivedInr ? b : a));
   const stable = routes.filter((r) => r.family === "stablecoin").sort((a, b) => b.receivedInr - a.receivedInr)[0] ?? null;
   const r = (n: number) => `₹${Math.round(n).toLocaleString("en-IN")}`;

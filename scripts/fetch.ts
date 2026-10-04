@@ -2,28 +2,27 @@
 //   data/latest.json
 //   data/history/<YYYY-MM-DD>.json
 // Usage: npm run fetch            (add --dry to print without writing)
+// Needs network access to the public APIs listed in sources.yaml. No keys or env vars.
 
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { mkdir, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parse } from "yaml";
 import {
   buildHeadline,
   computeRoutes,
   type BookLevel,
   type ChainFeeInput,
   type MidSource,
-  type ModeledParams,
   type ModelInputs,
   type OrderBookInput,
   type ProviderQuote,
   type Snapshot,
-  type SourceEntry,
 } from "../src/model";
-
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+import { loadSources, ROOT } from "./sources";
 export const AMOUNTS_USD = [100, 200, 300, 500, 750, 1000, 1500, 2000, 3000, 5000, 7500, 10000];
-const DEFAULT_AMOUNT = 1000;
+export const DEFAULT_AMOUNT = 1000;
+/** Bid levels kept per book. Enough for $10,000 on CoinDCX's INR books at the time of writing; if not, the route is dropped with a warning. */
+const BOOK_LEVELS = 50;
 const UA = "railwatch/1.0 (+https://github.com/agnij-dutta/railwatch)";
 const USDC_MINT_SOLANA = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 
@@ -44,7 +43,7 @@ async function getJson<T>(url: string, init: RequestInit = {}, tries = 3): Promi
       return (await res.json()) as T;
     } catch (e) {
       lastErr = e;
-      await sleep(800 * (i + 1));
+      if (i < tries - 1) await sleep(800 * (i + 1));
     }
   }
   throw lastErr;
@@ -59,58 +58,6 @@ const rpc = <T>(url: string, method: string, params: unknown[]) =>
     if (r.error) throw new Error(`${method}: ${r.error.message}`);
     return r.result;
   });
-
-// ------------------------------------------------------------------ sources.yaml
-
-interface YamlSource {
-  id: string;
-  label: string;
-  status: SourceEntry["status"];
-  publisher: string;
-  url: string;
-  note: string;
-  param?: keyof ModeledParams;
-  value?: number | string;
-  unit?: string;
-  as_of?: string;
-}
-
-export async function loadSources(): Promise<{ sources: SourceEntry[]; params: ModeledParams }> {
-  const doc = parse(await readFile(join(ROOT, "sources.yaml"), "utf8")) as { sources: YamlSource[] };
-  const params: Partial<ModeledParams> = {};
-  const sources: SourceEntry[] = doc.sources.map((s) => {
-    if (s.param) {
-      if (typeof s.value !== "number") throw new Error(`sources.yaml: ${s.id} has param but no numeric value`);
-      params[s.param] = s.value;
-    }
-    return {
-      id: s.id,
-      label: s.label,
-      status: s.status,
-      url: s.url,
-      publisher: s.publisher,
-      asOf: s.as_of,
-      value: s.value,
-      unit: s.unit,
-      note: s.note.trim(),
-    };
-  });
-  const required: (keyof ModeledParams)[] = [
-    "chaseUsdWireFeeUsd",
-    "correspondentFeeUsd",
-    "gstRate",
-    "coinbaseAchDepositUsd",
-    "coinbaseUsdcConversionFeeRate",
-    "exchangeTakerFeeRate",
-    "exchangeSwapFeeRate",
-    "tdsRate",
-    "vdaTaxRate",
-    "vdaCessRate",
-    "inrWithdrawalFeeInr",
-  ];
-  for (const k of required) if (params[k] === undefined) throw new Error(`sources.yaml: missing param ${k}`);
-  return { sources, params: params as ModeledParams };
-}
 
 // ------------------------------------------------------------------ mid-market
 
@@ -164,7 +111,7 @@ async function fetchBook(pair: string): Promise<OrderBookInput | null> {
       .map(([p, q]) => [Number(p), Number(q)] as BookLevel)
       .filter(([p, q]) => p > 0 && q > 0)
       .sort((a, b) => b[0] - a[0])
-      .slice(0, 50);
+      .slice(0, BOOK_LEVELS);
     if (bids.length === 0) throw new Error("empty bid book");
     return { pair, fetchedAt: new Date(d.timestamp).toISOString(), bids };
   } catch (e) {
@@ -298,33 +245,53 @@ export async function buildSnapshot(): Promise<Snapshot> {
     params,
   };
 
-  const results: Snapshot["results"] = {};
-  for (const amount of AMOUNTS_USD) {
-    if (!providerQuotes[String(amount)]) continue;
-    results[String(amount)] = computeRoutes(inputs, amount);
-  }
-  const headlineRoutes = results[String(DEFAULT_AMOUNT)];
-  if (!headlineRoutes?.length) throw new Error(`no routes computed at $${DEFAULT_AMOUNT}`);
-
+  const { results, amountsUsd, headline } = computeResults(inputs, providerQuotes, warnings);
   return {
     schemaVersion: 1,
     generatedAt: now(),
     defaultAmountUsd: DEFAULT_AMOUNT,
-    amountsUsd: AMOUNTS_USD.filter((a) => results[String(a)]),
+    amountsUsd,
     mid: { rate: midRate, method: `median of ${okRates.length} sources`, sources: midSources },
     inputs,
     results,
-    headline: buildHeadline(headlineRoutes, DEFAULT_AMOUNT),
+    headline,
     sources,
     warnings,
   };
 }
 
-async function main() {
-  const dry = process.argv.includes("--dry");
-  const snap = await buildSnapshot();
-  const day = snap.generatedAt.slice(0, 10);
-  const json = JSON.stringify(snap, null, 1) + "\n";
+/**
+ * Run the cost model at every amount that has provider quotes. Pushes a warning (never silently drops)
+ * when a stablecoin route cannot be priced because its inputs were missing or the stored book was too thin.
+ * Shared by `fetch` (live inputs) and `recompute` (stored inputs, edited params).
+ */
+export function computeResults(
+  inputs: ModelInputs,
+  providerQuotes: Record<string, ProviderQuote[]>,
+  warnings: string[],
+): { results: Snapshot["results"]; amountsUsd: number[]; headline: Snapshot["headline"] } {
+  const results: Snapshot["results"] = {};
+  for (const amount of AMOUNTS_USD) {
+    if (!providerQuotes[String(amount)]) continue;
+    const routes = computeRoutes(inputs, amount);
+    results[String(amount)] = routes;
+    for (const net of ["base", "solana"] as const) {
+      if (!routes.some((r) => r.id === `usdc-${net}`)) {
+        warnings.push(`USDC via ${net} not priced at $${amount}: chain fee or order book missing, or the stored ${BOOK_LEVELS} bid levels cannot absorb the amount`);
+      }
+    }
+  }
+  const headlineRoutes = results[String(DEFAULT_AMOUNT)];
+  if (!headlineRoutes?.length) throw new Error(`no routes computed at $${DEFAULT_AMOUNT}`);
+  return {
+    results,
+    amountsUsd: AMOUNTS_USD.filter((a) => results[String(a)]),
+    headline: buildHeadline(headlineRoutes, DEFAULT_AMOUNT),
+  };
+}
+
+/** Print the default-amount table that the README shows. */
+export function printSummary(snap: Snapshot): void {
   console.log(snap.headline.text);
   console.log(`mid ${snap.mid.rate.toFixed(4)} (${snap.mid.method})`);
   for (const r of snap.results[String(snap.defaultAmountUsd)]) {
@@ -333,7 +300,18 @@ async function main() {
     );
   }
   if (snap.warnings.length) console.warn("warnings:\n  " + snap.warnings.join("\n  "));
-  if (dry) return;
+}
+
+async function main() {
+  const dry = process.argv.includes("--dry");
+  const snap = await buildSnapshot();
+  const day = snap.generatedAt.slice(0, 10);
+  const json = JSON.stringify(snap, null, 1) + "\n";
+  printSummary(snap);
+  if (dry) {
+    console.log("dry run: nothing written");
+    return;
+  }
   await mkdir(join(ROOT, "data/history"), { recursive: true });
   await writeFile(join(ROOT, "data/latest.json"), json);
   await writeFile(join(ROOT, `data/history/${day}.json`), json);

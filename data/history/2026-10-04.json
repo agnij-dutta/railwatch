@@ -1787,10 +1787,12 @@
    "correspondentFeeUsd": 20,
    "coinbaseAchDepositUsd": 0,
    "coinbaseUsdcConversionFeeRate": 0,
+   "exchangeDepositFeeUsd": 0,
    "exchangeTakerFeeRate": 0.005,
    "exchangeSwapFeeRate": 0.001,
    "inrWithdrawalFeeInr": 10,
    "gstRate": 0.18,
+   "gstOnFeesRate": 0.18,
    "tdsRate": 0.01,
    "vdaTaxRate": 0.3,
    "vdaCessRate": 0.04
@@ -1815,9 +1817,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 9627.44205,
-    "receivedInr": 9646.334860779798,
-    "lossInr": -18.89281077979831,
-    "lossBps": -19.623915347065953,
+    "receivedInr": 9646.91885394083,
+    "lossInr": -19.476803940829996,
+    "lossBps": -20.2305075841303,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -1870,7 +1872,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 9627.383856926528,
       "asset": "USDC",
@@ -1927,11 +1929,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹9,898, withheld by the exchange",
-      "inr": 98.98189170033947,
-      "balanceInrAfter": 9740.807962230381,
+      "detail": "1% of ₹9,840 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 98.39789853930779,
+      "balanceInrAfter": 9741.391955391413,
       "asset": "INR",
-      "qtyAfter": 9740.807962230381
+      "qtyAfter": 9741.391955391413
      },
      {
       "id": "inr-withdrawal",
@@ -1943,13 +1945,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 9730.807962230381,
+      "balanceInrAfter": 9731.391955391413,
       "asset": "INR",
-      "qtyAfter": 9730.807962230381
+      "qtyAfter": 9731.391955391413
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -1957,9 +1959,9 @@
       ],
       "detail": "31.2% of ₹271 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 84.47310145058327,
-      "balanceInrAfter": 9646.334860779798,
+      "balanceInrAfter": 9646.91885394083,
       "asset": "INR",
-      "qtyAfter": 9646.334860779798
+      "qtyAfter": 9646.91885394083
      }
     ],
     "hasModeled": true
@@ -1981,9 +1983,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 9627.44205,
-    "receivedInr": 9646.304856936365,
-    "lossInr": -18.862806936365814,
-    "lossBps": -19.592750429867106,
+    "receivedInr": 9646.888847463524,
+    "lossInr": -19.44679746352449,
+    "lossBps": -20.199339931134137,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -2036,7 +2038,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 9627.340436355202,
       "asset": "USDC",
@@ -2093,11 +2095,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹9,898, withheld by the exchange",
-      "inr": 98.98144528100602,
-      "balanceInrAfter": 9740.76403010373,
+      "detail": "1% of ₹9,840 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 98.39745475384734,
+      "balanceInrAfter": 9741.348020630889,
       "asset": "INR",
-      "qtyAfter": 9740.76403010373
+      "qtyAfter": 9741.348020630889
      },
      {
       "id": "inr-withdrawal",
@@ -2109,13 +2111,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 9730.76403010373,
+      "balanceInrAfter": 9731.348020630889,
       "asset": "INR",
-      "qtyAfter": 9730.76403010373
+      "qtyAfter": 9731.348020630889
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -2123,9 +2125,9 @@
       ],
       "detail": "31.2% of ₹271 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 84.4591731673645,
-      "balanceInrAfter": 9646.304856936365,
+      "balanceInrAfter": 9646.888847463524,
       "asset": "INR",
-      "qtyAfter": 9646.304856936365
+      "qtyAfter": 9646.888847463524
      }
     ],
     "hasModeled": true
@@ -2558,9 +2560,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 19254.8841,
-    "receivedInr": 19302.709933279795,
-    "lossInr": -47.825833279795916,
-    "lossBps": -24.83828675956347,
+    "receivedInr": 19303.877923131826,
+    "lossInr": -48.9938231318265,
+    "lossBps": -25.444880829911877,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -2613,7 +2615,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 19254.825906926526,
       "asset": "USDC",
@@ -2670,11 +2672,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹19,796, withheld by the exchange",
-      "inr": 197.96438170033798,
-      "balanceInrAfter": 19481.67480313038,
+      "detail": "1% of ₹19,680 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 196.7963918483074,
+      "balanceInrAfter": 19482.84279298241,
       "asset": "INR",
-      "qtyAfter": 19481.67480313038
+      "qtyAfter": 19482.84279298241
      },
      {
       "id": "inr-withdrawal",
@@ -2686,13 +2688,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 19471.67480313038,
+      "balanceInrAfter": 19472.84279298241,
       "asset": "INR",
-      "qtyAfter": 19471.67480313038
+      "qtyAfter": 19472.84279298241
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -2700,9 +2702,9 @@
       ],
       "detail": "31.2% of ₹542 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 168.96486985058436,
-      "balanceInrAfter": 19302.709933279795,
+      "balanceInrAfter": 19303.877923131826,
       "asset": "INR",
-      "qtyAfter": 19302.709933279795
+      "qtyAfter": 19303.877923131826
      }
     ],
     "hasModeled": true
@@ -2724,9 +2726,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 19254.8841,
-    "receivedInr": 19302.679929436366,
-    "lossInr": -47.79582943636706,
-    "lossBps": -24.82270430096593,
+    "receivedInr": 19303.847916654522,
+    "lossInr": -48.963816654522816,
+    "lossBps": -25.429297003414742,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -2779,7 +2781,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 19254.782486355198,
       "asset": "USDC",
@@ -2836,11 +2838,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹19,796, withheld by the exchange",
-      "inr": 197.96393528100452,
-      "balanceInrAfter": 19481.63087100373,
+      "detail": "1% of ₹19,680 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 196.79594806284877,
+      "balanceInrAfter": 19482.798858221886,
       "asset": "INR",
-      "qtyAfter": 19481.63087100373
+      "qtyAfter": 19482.798858221886
      },
      {
       "id": "inr-withdrawal",
@@ -2852,13 +2854,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 19471.63087100373,
+      "balanceInrAfter": 19472.798858221886,
       "asset": "INR",
-      "qtyAfter": 19471.63087100373
+      "qtyAfter": 19472.798858221886
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -2866,9 +2868,9 @@
       ],
       "detail": "31.2% of ₹542 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 168.95094156736377,
-      "balanceInrAfter": 19302.679929436366,
+      "balanceInrAfter": 19303.847916654522,
       "asset": "INR",
-      "qtyAfter": 19302.679929436366
+      "qtyAfter": 19303.847916654522
      }
     ],
     "hasModeled": true
@@ -3349,9 +3351,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 28882.326149999997,
-    "receivedInr": 28959.085005779794,
-    "lossInr": -76.75885577979716,
-    "lossBps": -26.57641056373057,
+    "receivedInr": 28960.836992322827,
+    "lossInr": -78.51084232283029,
+    "lossBps": -27.183005245174925,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -3404,7 +3406,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 28882.267956926524,
       "asset": "USDC",
@@ -3461,11 +3463,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹29,695, withheld by the exchange",
-      "inr": 296.9468717003401,
-      "balanceInrAfter": 29222.541644030378,
+      "detail": "1% of ₹29,519 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 295.194885157307,
+      "balanceInrAfter": 29224.29363057341,
       "asset": "INR",
-      "qtyAfter": 29222.541644030378
+      "qtyAfter": 29224.29363057341
      },
      {
       "id": "inr-withdrawal",
@@ -3477,13 +3479,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 29212.541644030378,
+      "balanceInrAfter": 29214.29363057341,
       "asset": "INR",
-      "qtyAfter": 29212.541644030378
+      "qtyAfter": 29214.29363057341
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -3491,9 +3493,9 @@
       ],
       "detail": "31.2% of ₹812 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 253.45663825058364,
-      "balanceInrAfter": 28959.085005779794,
+      "balanceInrAfter": 28960.836992322827,
       "asset": "INR",
-      "qtyAfter": 28959.085005779794
+      "qtyAfter": 28960.836992322827
      }
     ],
     "hasModeled": true
@@ -3515,9 +3517,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 28882.326149999997,
-    "receivedInr": 28959.05500193636,
-    "lossInr": -76.72885193636466,
-    "lossBps": -26.566022257997616,
+    "receivedInr": 28960.80698584552,
+    "lossInr": -78.48083584552296,
+    "lossBps": -27.17261602750891,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -3570,7 +3572,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 28882.2245363552,
       "asset": "USDC",
@@ -3627,11 +3629,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹29,695, withheld by the exchange",
-      "inr": 296.94642528100667,
-      "balanceInrAfter": 29222.49771190373,
+      "detail": "1% of ₹29,519 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 295.19444137184837,
+      "balanceInrAfter": 29224.249695812887,
       "asset": "INR",
-      "qtyAfter": 29222.49771190373
+      "qtyAfter": 29224.249695812887
      },
      {
       "id": "inr-withdrawal",
@@ -3643,13 +3645,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 29212.49771190373,
+      "balanceInrAfter": 29214.249695812887,
       "asset": "INR",
-      "qtyAfter": 29212.49771190373
+      "qtyAfter": 29214.249695812887
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -3657,9 +3659,9 @@
       ],
       "detail": "31.2% of ₹812 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 253.44270996736668,
-      "balanceInrAfter": 28959.05500193636,
+      "balanceInrAfter": 28960.80698584552,
       "asset": "INR",
-      "qtyAfter": 28959.05500193636
+      "qtyAfter": 28960.80698584552
      }
     ],
     "hasModeled": true
@@ -4140,9 +4142,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 48137.21025,
-    "receivedInr": 48271.83515077979,
-    "lossInr": -134.624900779796,
-    "lossBps": -27.966909607063492,
+    "receivedInr": 48274.75513070482,
+    "lossInr": -137.5448807048233,
+    "lossBps": -28.573504777382336,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -4195,7 +4197,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 48137.15205692652,
       "asset": "USDC",
@@ -4252,11 +4254,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹49,491, withheld by the exchange",
-      "inr": 494.91185170033714,
-      "balanceInrAfter": 48704.27532583038,
+      "detail": "1% of ₹49,199 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 491.99187177530985,
+      "balanceInrAfter": 48707.195305755406,
       "asset": "INR",
-      "qtyAfter": 48704.27532583038
+      "qtyAfter": 48707.195305755406
      },
      {
       "id": "inr-withdrawal",
@@ -4268,13 +4270,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 48694.27532583038,
+      "balanceInrAfter": 48697.195305755406,
       "asset": "INR",
-      "qtyAfter": 48694.27532583038
+      "qtyAfter": 48697.195305755406
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -4282,9 +4284,9 @@
       ],
       "detail": "31.2% of ₹1,354 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 422.4401750505858,
-      "balanceInrAfter": 48271.83515077979,
+      "balanceInrAfter": 48274.75513070482,
       "asset": "INR",
-      "qtyAfter": 48271.83515077979
+      "qtyAfter": 48274.75513070482
      }
     ],
     "hasModeled": true
@@ -4306,9 +4308,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 48137.21025,
-    "receivedInr": 48271.80514693636,
-    "lossInr": -134.59489693636715,
-    "lossBps": -27.960676623624476,
+    "receivedInr": 48274.72512422752,
+    "lossInr": -137.5148742275269,
+    "lossBps": -28.567271246784998,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -4361,7 +4363,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 48137.108636355195,
       "asset": "USDC",
@@ -4418,11 +4420,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹49,491, withheld by the exchange",
-      "inr": 494.9114052810037,
-      "balanceInrAfter": 48704.23139370373,
+      "detail": "1% of ₹49,199 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 491.99142798984394,
+      "balanceInrAfter": 48707.15137099489,
       "asset": "INR",
-      "qtyAfter": 48704.23139370373
+      "qtyAfter": 48707.15137099489
      },
      {
       "id": "inr-withdrawal",
@@ -4434,13 +4436,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 48694.23139370373,
+      "balanceInrAfter": 48697.15137099489,
       "asset": "INR",
-      "qtyAfter": 48694.23139370373
+      "qtyAfter": 48697.15137099489
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -4448,9 +4450,9 @@
       ],
       "detail": "31.2% of ₹1,354 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 422.42624676736887,
-      "balanceInrAfter": 48271.80514693636,
+      "balanceInrAfter": 48274.72512422752,
       "asset": "INR",
-      "qtyAfter": 48271.80514693636
+      "qtyAfter": 48274.72512422752
      }
     ],
     "hasModeled": true
@@ -4931,9 +4933,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 72205.81537499999,
-    "receivedInr": 72412.77283202979,
-    "lossInr": -206.95745702979912,
-    "lossBps": -28.662159128730586,
+    "receivedInr": 72417.15280368231,
+    "lossInr": -211.33742868232366,
+    "lossBps": -29.268754543487308,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -4986,7 +4988,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 72205.75718192653,
       "asset": "USDC",
@@ -5043,11 +5045,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹74,237, withheld by the exchange",
-      "inr": 742.3680767003389,
-      "balanceInrAfter": 73056.44242808038,
+      "detail": "1% of ₹73,799 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 737.9881050478143,
+      "balanceInrAfter": 73060.8223997329,
       "asset": "INR",
-      "qtyAfter": 73056.44242808038
+      "qtyAfter": 73060.8223997329
      },
      {
       "id": "inr-withdrawal",
@@ -5059,13 +5061,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 73046.44242808038,
+      "balanceInrAfter": 73050.8223997329,
       "asset": "INR",
-      "qtyAfter": 73046.44242808038
+      "qtyAfter": 73050.8223997329
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -5073,9 +5075,9 @@
       ],
       "detail": "31.2% of ₹2,031 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 633.6695960505895,
-      "balanceInrAfter": 72412.77283202979,
+      "balanceInrAfter": 72417.15280368231,
       "asset": "INR",
-      "qtyAfter": 72412.77283202979
+      "qtyAfter": 72417.15280368231
      }
     ],
     "hasModeled": true
@@ -5097,9 +5099,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 72205.81537499999,
-    "receivedInr": 72412.74282818637,
-    "lossInr": -206.92745318637753,
-    "lossBps": -28.658003806438916,
+    "receivedInr": 72417.12279720503,
+    "lossInr": -211.30742220503453,
+    "lossBps": -29.26459885642342,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -5152,7 +5154,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 72205.71376135519,
       "asset": "USDC",
@@ -5209,11 +5211,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹74,237, withheld by the exchange",
-      "inr": 742.3676302810054,
-      "balanceInrAfter": 73056.39849595373,
+      "detail": "1% of ₹73,799 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 737.9876612623484,
+      "balanceInrAfter": 73060.77846497239,
       "asset": "INR",
-      "qtyAfter": 73056.39849595373
+      "qtyAfter": 73060.77846497239
      },
      {
       "id": "inr-withdrawal",
@@ -5225,13 +5227,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 73046.39849595373,
+      "balanceInrAfter": 73050.77846497239,
       "asset": "INR",
-      "qtyAfter": 73046.39849595373
+      "qtyAfter": 73050.77846497239
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -5239,9 +5241,9 @@
       ],
       "detail": "31.2% of ₹2,031 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 633.6556677673652,
-      "balanceInrAfter": 72412.74282818637,
+      "balanceInrAfter": 72417.12279720503,
       "asset": "INR",
-      "qtyAfter": 72412.74282818637
+      "qtyAfter": 72417.12279720503
      }
     ],
     "hasModeled": true
@@ -5722,9 +5724,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 96274.4205,
-    "receivedInr": 96553.7105132798,
-    "lossInr": -279.2900132798095,
-    "lossBps": -29.009783889564883,
+    "receivedInr": 96559.55047665983,
+    "lossInr": -285.1299766598386,
+    "lossBps": -29.6163794265413,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -5777,7 +5779,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 96274.36230692652,
       "asset": "USDC",
@@ -5834,11 +5836,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹98,982, withheld by the exchange",
-      "inr": 989.8243017003406,
-      "balanceInrAfter": 97408.60953033039,
+      "detail": "1% of ₹98,398 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 983.9843383203115,
+      "balanceInrAfter": 97414.44949371042,
       "asset": "INR",
-      "qtyAfter": 97408.60953033039
+      "qtyAfter": 97414.44949371042
      },
      {
       "id": "inr-withdrawal",
@@ -5850,13 +5852,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 97398.60953033039,
+      "balanceInrAfter": 97404.44949371042,
       "asset": "INR",
-      "qtyAfter": 97398.60953033039
+      "qtyAfter": 97404.44949371042
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -5864,9 +5866,9 @@
       ],
       "detail": "31.2% of ₹2,708 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 844.8990170505858,
-      "balanceInrAfter": 96553.7105132798,
+      "balanceInrAfter": 96559.55047665983,
       "asset": "INR",
-      "qtyAfter": 96553.7105132798
+      "qtyAfter": 96559.55047665983
      }
     ],
     "hasModeled": true
@@ -5888,9 +5890,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 96274.4205,
-    "receivedInr": 96553.68050943637,
-    "lossInr": -279.26000943637337,
-    "lossBps": -29.00666739784462,
+    "receivedInr": 96559.52047018253,
+    "lossInr": -285.0999701825349,
+    "lossBps": -29.613262661241873,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -5943,7 +5945,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 96274.31888635519,
       "asset": "USDC",
@@ -6000,11 +6002,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹98,982, withheld by the exchange",
-      "inr": 989.8238552810071,
-      "balanceInrAfter": 97408.56559820373,
+      "detail": "1% of ₹98,398 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 983.9838945348456,
+      "balanceInrAfter": 97414.40555894989,
       "asset": "INR",
-      "qtyAfter": 97408.56559820373
+      "qtyAfter": 97414.40555894989
      },
      {
       "id": "inr-withdrawal",
@@ -6016,13 +6018,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 97398.56559820373,
+      "balanceInrAfter": 97404.40555894989,
       "asset": "INR",
-      "qtyAfter": 97398.56559820373
+      "qtyAfter": 97404.40555894989
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -6030,9 +6032,9 @@
       ],
       "detail": "31.2% of ₹2,708 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 844.8850887673616,
-      "balanceInrAfter": 96553.68050943637,
+      "balanceInrAfter": 96559.52047018253,
       "asset": "INR",
-      "qtyAfter": 96553.68050943637
+      "qtyAfter": 96559.52047018253
      }
     ],
     "hasModeled": true
@@ -6513,9 +6515,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 144411.63074999998,
-    "receivedInr": 144835.58587577977,
-    "lossInr": -423.9551257797866,
-    "lossBps": -29.357408650396163,
+    "receivedInr": 144844.3458226148,
+    "lossInr": -432.7150726148102,
+    "lossBps": -29.964004309591267,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -6568,7 +6570,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 144411.57255692652,
       "asset": "USDC",
@@ -6625,11 +6627,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹1,48,474, withheld by the exchange",
-      "inr": 1484.736751700344,
-      "balanceInrAfter": 146112.94373483036,
+      "detail": "1% of ₹1,47,598 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 1475.9768048653204,
+      "balanceInrAfter": 146121.70368166539,
       "asset": "INR",
-      "qtyAfter": 146112.94373483036
+      "qtyAfter": 146121.70368166539
      },
      {
       "id": "inr-withdrawal",
@@ -6641,13 +6643,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 146102.94373483036,
+      "balanceInrAfter": 146111.70368166539,
       "asset": "INR",
-      "qtyAfter": 146102.94373483036
+      "qtyAfter": 146111.70368166539
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -6655,9 +6657,9 @@
       ],
       "detail": "31.2% of ₹4,062 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 1267.357859050593,
-      "balanceInrAfter": 144835.58587577977,
+      "balanceInrAfter": 144844.3458226148,
       "asset": "INR",
-      "qtyAfter": 144835.58587577977
+      "qtyAfter": 144844.3458226148
      }
     ],
     "hasModeled": true
@@ -6679,9 +6681,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 144411.63074999998,
-    "receivedInr": 144835.55587193638,
-    "lossInr": -423.92512193639413,
-    "lossBps": -29.355330989252344,
+    "receivedInr": 144844.31581613753,
+    "lossInr": -432.68506613755017,
+    "lossBps": -29.961926466061335,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -6734,7 +6736,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 144411.52913635518,
       "asset": "USDC",
@@ -6791,11 +6793,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹1,48,474, withheld by the exchange",
-      "inr": 1484.736305280996,
-      "balanceInrAfter": 146112.89980270376,
+      "detail": "1% of ₹1,47,598 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 1475.97636107984,
+      "balanceInrAfter": 146121.65974690492,
       "asset": "INR",
-      "qtyAfter": 146112.89980270376
+      "qtyAfter": 146121.65974690492
      },
      {
       "id": "inr-withdrawal",
@@ -6807,13 +6809,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 146102.89980270376,
+      "balanceInrAfter": 146111.65974690492,
       "asset": "INR",
-      "qtyAfter": 146102.89980270376
+      "qtyAfter": 146111.65974690492
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -6821,9 +6823,9 @@
       ],
       "detail": "31.2% of ₹4,062 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 1267.3439307673834,
-      "balanceInrAfter": 144835.55587193638,
+      "balanceInrAfter": 144844.31581613753,
       "asset": "INR",
-      "qtyAfter": 144835.55587193638
+      "qtyAfter": 144844.31581613753
      }
     ],
     "hasModeled": true
@@ -7304,9 +7306,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 192548.841,
-    "receivedInr": 193117.46123827976,
-    "lossInr": -568.6202382797783,
-    "lossBps": -29.531221030812556,
+    "receivedInr": 193129.1411685698,
+    "lossInr": -580.3001685698109,
+    "lossBps": -30.137816751117757,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -7359,7 +7361,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 192548.7828069265,
       "asset": "USDC",
@@ -7416,11 +7418,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹1,97,965, withheld by the exchange",
-      "inr": 1979.6492017003475,
-      "balanceInrAfter": 194817.27793933035,
+      "detail": "1% of ₹1,96,797 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 1967.9692714103148,
+      "balanceInrAfter": 194828.95786962038,
       "asset": "INR",
-      "qtyAfter": 194817.27793933035
+      "qtyAfter": 194828.95786962038
      },
      {
       "id": "inr-withdrawal",
@@ -7432,13 +7434,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 194807.27793933035,
+      "balanceInrAfter": 194818.95786962038,
       "asset": "INR",
-      "qtyAfter": 194807.27793933035
+      "qtyAfter": 194818.95786962038
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -7446,9 +7448,9 @@
       ],
       "detail": "31.2% of ₹5,416 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 1689.8167010505858,
-      "balanceInrAfter": 193117.46123827976,
+      "balanceInrAfter": 193129.1411685698,
       "asset": "INR",
-      "qtyAfter": 193117.46123827976
+      "qtyAfter": 193129.1411685698
      }
     ],
     "hasModeled": true
@@ -7470,9 +7472,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 192548.841,
-    "receivedInr": 193117.43123443637,
-    "lossInr": -568.5902344363858,
-    "lossBps": -29.52966278495469,
+    "receivedInr": 193129.11116209254,
+    "lossInr": -580.2701620925509,
+    "lossBps": -30.136258368470312,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -7525,7 +7527,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 192548.73938635518,
       "asset": "USDC",
@@ -7582,11 +7584,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹1,97,965, withheld by the exchange",
-      "inr": 1979.6487552809995,
-      "balanceInrAfter": 194817.23400720375,
+      "detail": "1% of ₹1,96,797 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 1967.9688276248344,
+      "balanceInrAfter": 194828.9139348599,
       "asset": "INR",
-      "qtyAfter": 194817.23400720375
+      "qtyAfter": 194828.9139348599
      },
      {
       "id": "inr-withdrawal",
@@ -7598,13 +7600,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 194807.23400720375,
+      "balanceInrAfter": 194818.9139348599,
       "asset": "INR",
-      "qtyAfter": 194807.23400720375
+      "qtyAfter": 194818.9139348599
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -7612,9 +7614,9 @@
       ],
       "detail": "31.2% of ₹5,416 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 1689.8027727673762,
-      "balanceInrAfter": 193117.43123443637,
+      "balanceInrAfter": 193129.11116209254,
       "asset": "INR",
-      "qtyAfter": 193117.43123443637
+      "qtyAfter": 193129.11116209254
      }
     ],
     "hasModeled": true
@@ -8095,9 +8097,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 288823.26149999996,
-    "receivedInr": 289672.50935844105,
-    "lossInr": -849.2478584410856,
-    "lossBps": -29.40372094790868,
+    "receivedInr": 289690.0284916868,
+    "lossInr": -866.7669916868326,
+    "lossBps": -30.010290278743103,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -8150,7 +8152,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 288823.2033069265,
       "asset": "USDC",
@@ -8207,11 +8209,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹2,96,934, withheld by the exchange",
-      "inr": 2969.3446179205785,
-      "balanceInrAfter": 292213.2038495627,
+      "detail": "1% of ₹2,95,183 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 2951.8254846748314,
+      "balanceInrAfter": 292230.7229828084,
       "asset": "INR",
-      "qtyAfter": 292213.2038495627
+      "qtyAfter": 292230.7229828084
      },
      {
       "id": "inr-withdrawal",
@@ -8223,13 +8225,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 292203.2038495627,
+      "balanceInrAfter": 292220.7229828084,
       "asset": "INR",
-      "qtyAfter": 292203.2038495627
+      "qtyAfter": 292220.7229828084
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -8237,9 +8239,9 @@
       ],
       "detail": "31.2% of ₹8,111 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 2530.694491121627,
-      "balanceInrAfter": 289672.50935844105,
+      "balanceInrAfter": 289690.0284916868,
       "asset": "INR",
-      "qtyAfter": 289672.50935844105
+      "qtyAfter": 289690.0284916868
      }
     ],
     "hasModeled": true
@@ -8261,9 +8263,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 288823.26149999996,
-    "receivedInr": 289672.47936062684,
-    "lossInr": -849.2178606268717,
-    "lossBps": -29.40268232608653,
+    "receivedInr": 289689.9984912392,
+    "lossInr": -866.736991239246,
+    "lossBps": -30.00925156574503,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -8316,7 +8318,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 288823.1598863552,
       "asset": "USDC",
@@ -8373,11 +8375,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹2,96,934, withheld by the exchange",
-      "inr": 2969.3441715909285,
-      "balanceInrAfter": 292213.159926264,
+      "detail": "1% of ₹2,95,183 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 2951.825040978554,
+      "balanceInrAfter": 292230.6790568764,
       "asset": "INR",
-      "qtyAfter": 292213.159926264
+      "qtyAfter": 292230.6790568764
      },
      {
       "id": "inr-withdrawal",
@@ -8389,13 +8391,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 292203.159926264,
+      "balanceInrAfter": 292220.6790568764,
       "asset": "INR",
-      "qtyAfter": 292203.159926264
+      "qtyAfter": 292220.6790568764
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -8403,9 +8405,9 @@
       ],
       "detail": "31.2% of ₹8,111 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 2530.680565637187,
-      "balanceInrAfter": 289672.47936062684,
+      "balanceInrAfter": 289689.9984912392,
       "asset": "INR",
-      "qtyAfter": 289672.47936062684
+      "qtyAfter": 289689.9984912392
      }
     ],
     "hasModeled": true
@@ -8886,9 +8888,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 481372.1025,
-    "receivedInr": 482395.1503884281,
-    "lossInr": -1023.0478884281474,
-    "lossBps": -21.252745705764024,
+    "receivedInr": 482424.3139150017,
+    "lossInr": -1052.211415001715,
+    "lossBps": -21.858587349309783,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -8941,7 +8943,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 481372.04430692655,
       "asset": "USDC",
@@ -8998,11 +9000,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹4,94,297, withheld by the exchange",
-      "inr": 4942.970605690032,
-      "balanceInrAfter": 486437.73730595765,
+      "detail": "1% of ₹4,91,381 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 4913.807079116465,
+      "balanceInrAfter": 486466.9008325312,
       "asset": "INR",
-      "qtyAfter": 486437.73730595765
+      "qtyAfter": 486466.9008325312
      },
      {
       "id": "inr-withdrawal",
@@ -9014,13 +9016,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 486427.73730595765,
+      "balanceInrAfter": 486456.9008325312,
       "asset": "INR",
-      "qtyAfter": 486427.73730595765
+      "qtyAfter": 486456.9008325312
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -9028,9 +9030,9 @@
       ],
       "detail": "31.2% of ₹12,925 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 4032.586917529523,
-      "balanceInrAfter": 482395.1503884281,
+      "balanceInrAfter": 482424.3139150017,
       "asset": "INR",
-      "qtyAfter": 482395.1503884281
+      "qtyAfter": 482424.3139150017
      }
     ],
     "hasModeled": true
@@ -9052,9 +9054,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 481372.1025,
-    "receivedInr": 482395.12058967754,
-    "lossInr": -1023.0180896775564,
-    "lossBps": -21.252126668008486,
+    "receivedInr": 482424.2841136352,
+    "lossInr": -1052.1816136352136,
+    "lossBps": -21.85796825721145,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -9107,7 +9109,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 481372.0008863551,
       "asset": "USDC",
@@ -9164,11 +9166,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹4,94,297, withheld by the exchange",
-      "inr": 4942.970162322221,
-      "balanceInrAfter": 486437.6936741313,
+      "detail": "1% of ₹4,91,381 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 4913.806638364564,
+      "balanceInrAfter": 486466.85719808895,
       "asset": "INR",
-      "qtyAfter": 486437.6936741313
+      "qtyAfter": 486466.85719808895
      },
      {
       "id": "inr-withdrawal",
@@ -9180,13 +9182,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 486427.6936741313,
+      "balanceInrAfter": 486456.85719808895,
       "asset": "INR",
-      "qtyAfter": 486427.6936741313
+      "qtyAfter": 486456.85719808895
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -9194,9 +9196,9 @@
       ],
       "detail": "31.2% of ₹12,925 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 4032.573084453761,
-      "balanceInrAfter": 482395.12058967754,
+      "balanceInrAfter": 482424.2841136352,
       "asset": "INR",
-      "qtyAfter": 482395.12058967754
+      "qtyAfter": 482424.2841136352
      }
     ],
     "hasModeled": true
@@ -9677,9 +9679,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 722058.1537499999,
-    "receivedInr": 722606.5695219703,
-    "lossInr": -548.415771970409,
-    "lossBps": -7.595174559309642,
+    "receivedInr": 722650.2278036361,
+    "lossInr": -592.07405363617,
+    "lossBps": -8.1998112002647,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -9732,7 +9734,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 722058.0955569264,
       "asset": "USDC",
@@ -9789,11 +9791,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹7,39,971, withheld by the exchange",
-      "inr": 7399.708756910753,
-      "balanceInrAfter": 728205.3387675852,
+      "detail": "1% of ₹7,35,605 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 7356.050475244992,
+      "balanceInrAfter": 728248.997049251,
       "asset": "INR",
-      "qtyAfter": 728205.3387675852
+      "qtyAfter": 728248.997049251
      },
      {
       "id": "inr-withdrawal",
@@ -9805,13 +9807,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 728195.3387675852,
+      "balanceInrAfter": 728238.997049251,
       "asset": "INR",
-      "qtyAfter": 728195.3387675852
+      "qtyAfter": 728238.997049251
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -9819,9 +9821,9 @@
       ],
       "detail": "31.2% of ₹17,913 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 5588.76924561488,
-      "balanceInrAfter": 722606.5695219703,
+      "balanceInrAfter": 722650.2278036361,
       "asset": "INR",
-      "qtyAfter": 722606.5695219703
+      "qtyAfter": 722650.2278036361
      }
     ],
     "hasModeled": true
@@ -9843,9 +9845,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 722058.1537499999,
-    "receivedInr": 722606.5397342867,
-    "lossInr": -548.3859842867823,
-    "lossBps": -7.594762020742327,
+    "receivedInr": 722650.1980133377,
+    "lossInr": -592.0442633377388,
+    "lossBps": -8.199398625484172,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -9898,7 +9900,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 722058.0521363551,
       "asset": "USDC",
@@ -9955,11 +9957,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹7,39,971, withheld by the exchange",
-      "inr": 7399.7083137076115,
-      "balanceInrAfter": 728205.2951519634,
+      "detail": "1% of ₹7,35,605 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 7356.050034656655,
+      "balanceInrAfter": 728248.9534310143,
       "asset": "INR",
-      "qtyAfter": 728205.2951519634
+      "qtyAfter": 728248.9534310143
      },
      {
       "id": "inr-withdrawal",
@@ -9971,13 +9973,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 728195.2951519634,
+      "balanceInrAfter": 728238.9534310143,
       "asset": "INR",
-      "qtyAfter": 728195.2951519634
+      "qtyAfter": 728238.9534310143
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -9985,9 +9987,9 @@
       ],
       "detail": "31.2% of ₹17,913 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 5588.7554176766425,
-      "balanceInrAfter": 722606.5397342867,
+      "balanceInrAfter": 722650.1980133377,
       "asset": "INR",
-      "qtyAfter": 722606.5397342867
+      "qtyAfter": 722650.1980133377
      }
     ],
     "hasModeled": true
@@ -10468,9 +10470,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 962744.205,
-    "receivedInr": 962573.0234866374,
-    "lossInr": 171.18151336256415,
-    "lossBps": 1.7780581017630135,
+    "receivedInr": 962631.1550192367,
+    "lossInr": 113.04998076322954,
+    "lossBps": 1.1742473252615377,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -10523,7 +10525,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 962744.1468069264,
       "asset": "USDC",
@@ -10580,11 +10582,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹9,85,280, withheld by the exchange",
-      "inr": 9852.802135495236,
-      "balanceInrAfter": 969614.2581540899,
+      "detail": "1% of ₹9,79,467 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 9794.670602895902,
+      "balanceInrAfter": 969672.3896866892,
       "asset": "INR",
-      "qtyAfter": 969614.2581540899
+      "qtyAfter": 969672.3896866892
      },
      {
       "id": "inr-withdrawal",
@@ -10596,13 +10598,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 969604.2581540899,
+      "balanceInrAfter": 969662.3896866892,
       "asset": "INR",
-      "qtyAfter": 969604.2581540899
+      "qtyAfter": 969662.3896866892
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -10610,9 +10612,9 @@
       ],
       "detail": "31.2% of ₹22,536 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 7031.234667452518,
-      "balanceInrAfter": 962573.0234866374,
+      "balanceInrAfter": 962631.1550192367,
       "asset": "INR",
-      "qtyAfter": 962573.0234866374
+      "qtyAfter": 962631.1550192367
      }
     ],
     "hasModeled": true
@@ -10634,9 +10636,9 @@
     ],
     "midRate": 96.27442049999999,
     "idealInr": 962744.205,
-    "receivedInr": 962572.9937583567,
-    "lossInr": 171.21124164329376,
-    "lossBps": 1.778366888672093,
+    "receivedInr": 962631.1252883463,
+    "lossInr": 113.07971165364143,
+    "lossBps": 1.1745561392773216,
     "hops": [
      {
       "id": "onramp-deposit",
@@ -10689,7 +10691,7 @@
       "sourceIds": [
        "coindcx-deposit"
       ],
-      "detail": "Crypto deposits are free on Indian exchanges",
+      "detail": "$0.00 to deposit USDC (published schedule)",
       "inr": 0,
       "balanceInrAfter": 962744.1033863551,
       "asset": "USDC",
@@ -10746,11 +10748,11 @@
       "sourceIds": [
        "tds-194s"
       ],
-      "detail": "1% of ₹9,85,280, withheld by the exchange",
-      "inr": 9852.80169317592,
-      "balanceInrAfter": 969614.2146254468,
+      "detail": "1% of ₹9,79,467 (proceeds net of fee and GST), withheld by the exchange",
+      "inr": 9794.670163186267,
+      "balanceInrAfter": 969672.3461554365,
       "asset": "INR",
-      "qtyAfter": 969614.2146254468
+      "qtyAfter": 969672.3461554365
      },
      {
       "id": "inr-withdrawal",
@@ -10762,13 +10764,13 @@
       ],
       "detail": "₹10 per withdrawal (assumption)",
       "inr": 10,
-      "balanceInrAfter": 969604.2146254468,
+      "balanceInrAfter": 969662.3461554365,
       "asset": "INR",
-      "qtyAfter": 969604.2146254468
+      "qtyAfter": 969662.3461554365
      },
      {
       "id": "vda-tax",
-      "label": "30% VDA tax on the gain, plus cess (reserve)",
+      "label": "30% VDA tax on the gain, plus 4% cess (reserve)",
       "category": "tax",
       "status": "statutory",
       "sourceIds": [
@@ -10776,9 +10778,9 @@
       ],
       "detail": "31.2% of ₹22,536 gain over a mid-market cost basis. Fees are not deductible.",
       "inr": 7031.22086709016,
-      "balanceInrAfter": 962572.9937583567,
+      "balanceInrAfter": 962631.1252883463,
       "asset": "INR",
-      "qtyAfter": 962572.9937583567
+      "qtyAfter": 962631.1252883463
      }
     ],
     "hasModeled": true
@@ -11257,9 +11259,9 @@
   "stablecoin": {
    "routeId": "usdc-solana",
    "name": "USDC via Solana",
-   "lossInr": -279.2900132798095
+   "lossInr": -285.1299766598386
   },
-  "text": "Sending $1,000 to India today: a Chase wire loses ₹3,604, Remitly loses ₹244, the USDC via Solana route lands ₹279 above mid-market even after tax. Here's every hop."
+  "text": "Sending $1,000 to India today: a Chase wire loses ₹3,604, Remitly loses ₹244, the USDC via Solana route lands ₹285 above mid-market even after tax. Here's every hop."
  },
  "sources": [
   {
@@ -11314,12 +11316,12 @@
    "id": "chase-usd-wire-fee",
    "label": "Chase outgoing international wire, sent in USD, online",
    "status": "modeled",
-   "url": "https://www.chase.com/personal/banking/fees",
-   "publisher": "JPMorgan Chase, Additional Banking Services and Fees",
-   "asOf": "2025-01-01",
+   "url": "https://www.monito.com/en/wiki/international-wire-transfers-chase-bank-us",
+   "publisher": "JPMorgan Chase, Additional Banking Services and Fees (personal), corroborated by Monito",
+   "asOf": "2026-10-04",
    "value": 40,
    "unit": "USD",
-   "note": "Chase charges $40 for a USD-denominated international wire sent online ($50 with a banker) and $5 (or $0 at $5,000 and above) when sent in foreign currency. The foreign-currency fee is confirmed live by the Wise feed ($5 at $1,000, $0 at $5,000). The $40 USD figure is from the published schedule: re-check before publishing."
+   "note": "Chase charges $40 for a USD-denominated international wire sent online ($50 with a banker) and $5 (or $0 at $5,000 and above) when sent in foreign currency. The foreign-currency fee is confirmed live by the Wise feed ($5 at $1,000, $0 at $5,000). Chase's personal fee page moved and its old URL returns 404, so the $40 figure is cited from independent 2026 fee guides and dated the day it was last checked. Re-check against Chase's Deposit Account Agreement."
   },
   {
    "id": "correspondent-fee",
@@ -11338,10 +11340,10 @@
    "status": "modeled",
    "url": "https://help.coinbase.com/en/coinbase/trading-and-funding/pricing-and-fees/fees",
    "publisher": "Coinbase Help Center",
-   "asOf": "2025-01-01",
+   "asOf": "2026-10-04",
    "value": 0,
    "unit": "USD",
-   "note": "Standard ACH deposits into a US Coinbase account are free. Wire deposits cost $10."
+   "note": "Standard ACH deposits into a US Coinbase account are free (last checked 2026-10-04). Wire deposits cost $10. ACH takes several business days to clear before the USDC can be sent."
   },
   {
    "id": "coinbase-usdc",
@@ -11349,10 +11351,10 @@
    "status": "modeled",
    "url": "https://help.coinbase.com/en/coinbase/getting-started/crypto-education/usd-coin-usdc-faq",
    "publisher": "Coinbase Help Center",
-   "asOf": "2025-01-01",
+   "asOf": "2026-10-04",
    "value": 0,
    "unit": "fraction",
-   "note": "Coinbase converts USD to USDC 1:1 with no fee."
+   "note": "Coinbase converts USD to USDC 1:1 with no fee or spread (last checked 2026-10-04). Coinbase Exchange charges on USDC to USD conversions above $2 million per 30 days, irrelevant here."
   },
   {
    "id": "coindcx-deposit",
@@ -11360,7 +11362,7 @@
    "status": "modeled",
    "url": "https://coindcx.com/fees",
    "publisher": "CoinDCX",
-   "asOf": "2025-01-01",
+   "asOf": "2026-10-04",
    "value": 0,
    "unit": "USD",
    "note": "Deposits are free. Check that the exchange accepts USDC on the network you send on before sending: support varies by token and network."
@@ -11396,7 +11398,7 @@
    "asOf": "2026-10-04",
    "value": 10,
    "unit": "INR",
-   "note": "Assumed ₹10 flat per IMPS withdrawal. Immaterial at these amounts."
+   "note": "Assumed ₹10 flat per IMPS withdrawal. Several 2026 fee guides list CoinDCX INR withdrawals as free, so this is deliberately conservative. Immaterial at these amounts."
   },
   {
    "id": "gst-currency-conversion",
@@ -11407,7 +11409,7 @@
    "asOf": "2017-07-01",
    "value": 0.18,
    "unit": "fraction",
-   "note": "When a bank converts foreign currency, GST at 18% applies to a deemed value: 1% of the gross amount up to ₹1 lakh (minimum ₹250), ₹1,000 plus 0.5% between ₹1 lakh and ₹10 lakh, ₹5,500 plus 0.1% above that (value capped at ₹60,000). Banks apply this to inward USD remittances they convert. It does not apply when the money arrives already in INR."
+   "note": "When a bank converts foreign currency, GST at 18% applies to a deemed value: 1% of the gross amount up to ₹1 lakh (minimum ₹250), ₹1,000 plus 0.5% of the amount above ₹1 lakh up to ₹10 lakh, ₹5,500 plus 0.1% of the amount above ₹10 lakh (value capped at ₹60,000). This slab method is Rule 32(2)(b), an option the bank may elect instead of the spread-based Rule 32(2)(a). Banks apply it to inward USD remittances they convert. It does not apply when the money arrives already in INR, which is why provider routes skip it."
   },
   {
    "id": "gst-on-fees",
@@ -11418,41 +11420,42 @@
    "asOf": "2017-07-01",
    "value": 0.18,
    "unit": "fraction",
-   "note": "Indian exchanges charge 18% GST on top of trading fees."
+   "note": "Exchange trading fees are a taxable service at the standard 18% (9% CGST + 9% SGST, or 18% IGST). Indian exchanges add it on top of the fee."
   },
   {
    "id": "tds-194s",
    "label": "1% TDS on transfer of virtual digital assets",
    "status": "statutory",
-   "url": "https://incometaxindia.gov.in/",
-   "publisher": "Income Tax Department, Government of India",
+   "url": "https://www.incometaxindia.gov.in/w/tds-on-payment-for-the-transfer-of-virtual-digital-assets-vdas-",
+   "publisher": "Income Tax Department, Government of India (Section 194S; CBDT Circular 13/2022)",
    "asOf": "2022-07-01",
    "value": 0.01,
    "unit": "fraction",
-   "note": "Introduced by the Finance Act, 2022 as Section 194S of the Income-tax Act, 1961, carried into the Income-tax Act, 2025. The exchange withholds 1% of the sale value on every VDA transfer, including crypto to crypto swaps. It is credited against your tax, or refunded, only when you file your return."
+   "note": "Introduced by the Finance Act, 2022 as Section 194S of the Income-tax Act, 1961, and carried into the Income-tax Act, 2025 under new numbering; we cite the 1961 section because exchanges and CBDT guidance still use it. The exchange withholds 1% on every VDA transfer, including crypto to crypto swaps. Per CBDT Circular 13/2022 the base is the consideration excluding GST and the exchange's own charges, so the model withholds on proceeds net of fee and GST. No TDS is due if the year's total is under ₹10,000 (₹50,000 for a \"specified person\"); the model always withholds. TDS is credited against your tax, or refunded, only when you file your return."
   },
   {
    "id": "vda-tax-115bbh",
    "label": "30% tax on income from transfer of virtual digital assets, plus 4% cess",
    "status": "statutory",
    "url": "https://incometaxindia.gov.in/",
-   "publisher": "Income Tax Department, Government of India",
+   "publisher": "Income Tax Department, Government of India (Section 115BBH, Finance Act 2022)",
    "asOf": "2022-04-01",
    "value": 0.3,
    "unit": "fraction",
-   "note": "Section 115BBH: gains are taxed at a flat 30%, only the cost of acquisition is deductible (no fees), and losses cannot be set off against anything. 4% health and education cess applies on top. Surcharge at high incomes is ignored. We assume a cost basis equal to the mid-market INR value of the USDC, which is the right model when you are moving your own money or a gift from a relative. If the USDC is payment for services, it is taxed as income on receipt instead."
+   "note": "Section 115BBH of the Income-tax Act, 1961 (carried into the 2025 Act): gains are taxed at a flat 30%, only the cost of acquisition is deductible (no fees), and losses cannot be set off against anything. 4% health and education cess applies on top. Surcharge at high incomes is ignored. We assume a cost basis equal to the mid-market INR value of the USDC, which is the right model when you are moving your own money or a gift from a relative. If the USDC is payment for services, it is taxed as income on receipt instead."
   },
   {
    "id": "health-education-cess",
    "label": "Health and education cess on income tax",
    "status": "statutory",
    "url": "https://incometaxindia.gov.in/",
-   "publisher": "Income Tax Department, Government of India",
+   "publisher": "Income Tax Department, Government of India (Finance Act, 2018)",
    "asOf": "2018-04-01",
    "value": 0.04,
    "unit": "fraction",
    "note": "4% of the tax amount."
   }
  ],
- "warnings": []
+ "warnings": [],
+ "recomputedAt": "2026-10-04T12:22:15.612Z"
 }

@@ -5,9 +5,11 @@
 #   status: modeled    taken from a published fee schedule, or an explicit assumption where none is published
 #   status: statutory  set by Indian law
 #
-# Modeled entries carry `param` (the model field they feed), `value`, and `as_of` (the date the figure
-# was taken from the publisher). `check` says how confident we are and what to re-verify before publishing.
-# Edit a value here and the next `npm run fetch` picks it up. Nothing else needs to change.
+# Modeled and statutory entries must carry `value` and `as_of` (the date the figure was taken from, or last
+# checked against, the publisher). Entries that feed the model also carry `param`, the ModeledParams field
+# they set (src/model/types.ts). The loader (scripts/sources.ts) refuses to run if any of that is missing.
+# Edit a value here, then `npm run recompute` (offline, reuses the stored live inputs) or `npm run fetch`.
+# Nothing else needs to change: the site and the route labels read every rate from here.
 
 sources:
   # ---------------------------------------------------------------- live
@@ -73,14 +75,15 @@ sources:
     param: chaseUsdWireFeeUsd
     value: 40
     unit: USD
-    as_of: "2025-01-01"
-    publisher: JPMorgan Chase, Additional Banking Services and Fees
-    url: https://www.chase.com/personal/banking/fees
+    as_of: "2026-10-04"
+    publisher: JPMorgan Chase, Additional Banking Services and Fees (personal), corroborated by Monito
+    url: https://www.monito.com/en/wiki/international-wire-transfers-chase-bank-us
     note: >-
       Chase charges $40 for a USD-denominated international wire sent online ($50 with a banker) and
       $5 (or $0 at $5,000 and above) when sent in foreign currency. The foreign-currency fee is
-      confirmed live by the Wise feed ($5 at $1,000, $0 at $5,000). The $40 USD figure is from the
-      published schedule: re-check before publishing.
+      confirmed live by the Wise feed ($5 at $1,000, $0 at $5,000). Chase's personal fee page moved
+      and its old URL returns 404, so the $40 figure is cited from independent 2026 fee guides and
+      dated the day it was last checked. Re-check against Chase's Deposit Account Agreement.
 
   - id: correspondent-fee
     label: Correspondent (intermediary) bank deduction on a USD SWIFT wire
@@ -103,10 +106,12 @@ sources:
     param: coinbaseAchDepositUsd
     value: 0
     unit: USD
-    as_of: "2025-01-01"
+    as_of: "2026-10-04"
     publisher: Coinbase Help Center
     url: https://help.coinbase.com/en/coinbase/trading-and-funding/pricing-and-fees/fees
-    note: Standard ACH deposits into a US Coinbase account are free. Wire deposits cost $10.
+    note: >-
+      Standard ACH deposits into a US Coinbase account are free (last checked 2026-10-04). Wire
+      deposits cost $10. ACH takes several business days to clear before the USDC can be sent.
 
   - id: coinbase-usdc
     label: Coinbase USD to USDC conversion fee
@@ -114,10 +119,12 @@ sources:
     param: coinbaseUsdcConversionFeeRate
     value: 0
     unit: fraction
-    as_of: "2025-01-01"
+    as_of: "2026-10-04"
     publisher: Coinbase Help Center
     url: https://help.coinbase.com/en/coinbase/getting-started/crypto-education/usd-coin-usdc-faq
-    note: Coinbase converts USD to USDC 1:1 with no fee.
+    note: >-
+      Coinbase converts USD to USDC 1:1 with no fee or spread (last checked 2026-10-04). Coinbase
+      Exchange charges on USDC to USD conversions above $2 million per 30 days, irrelevant here.
 
   # ---------------------------------------------------------------- modeled: Indian exchange
   - id: coindcx-deposit
@@ -125,9 +132,10 @@ sources:
     status: modeled
     publisher: CoinDCX
     url: https://coindcx.com/fees
+    param: exchangeDepositFeeUsd
     value: 0
     unit: USD
-    as_of: "2025-01-01"
+    as_of: "2026-10-04"
     note: >-
       Deposits are free. Check that the exchange accepts USDC on the network you send on before
       sending: support varies by token and network.
@@ -166,7 +174,9 @@ sources:
     as_of: "2026-10-04"
     publisher: Assumption
     url: https://coindcx.com/fees
-    note: Assumed ₹10 flat per IMPS withdrawal. Immaterial at these amounts.
+    note: >-
+      Assumed ₹10 flat per IMPS withdrawal. Several 2026 fee guides list CoinDCX INR withdrawals as
+      free, so this is deliberately conservative. Immaterial at these amounts.
 
   # ---------------------------------------------------------------- statutory
   - id: gst-currency-conversion
@@ -180,19 +190,24 @@ sources:
     url: https://cbic-gst.gov.in/gst-acts.html
     note: >-
       When a bank converts foreign currency, GST at 18% applies to a deemed value: 1% of the gross
-      amount up to ₹1 lakh (minimum ₹250), ₹1,000 plus 0.5% between ₹1 lakh and ₹10 lakh, ₹5,500
-      plus 0.1% above that (value capped at ₹60,000). Banks apply this to inward USD remittances they
-      convert. It does not apply when the money arrives already in INR.
+      amount up to ₹1 lakh (minimum ₹250), ₹1,000 plus 0.5% of the amount above ₹1 lakh up to ₹10
+      lakh, ₹5,500 plus 0.1% of the amount above ₹10 lakh (value capped at ₹60,000). This slab method
+      is Rule 32(2)(b), an option the bank may elect instead of the spread-based Rule 32(2)(a). Banks
+      apply it to inward USD remittances they convert. It does not apply when the money arrives
+      already in INR, which is why provider routes skip it.
 
   - id: gst-on-fees
     label: GST on exchange fees
     status: statutory
+    param: gstOnFeesRate
     value: 0.18
     unit: fraction
     as_of: "2017-07-01"
     publisher: CBIC, Government of India
     url: https://cbic-gst.gov.in/gst-acts.html
-    note: Indian exchanges charge 18% GST on top of trading fees.
+    note: >-
+      Exchange trading fees are a taxable service at the standard 18% (9% CGST + 9% SGST, or 18% IGST).
+      Indian exchanges add it on top of the fee.
 
   - id: tds-194s
     label: 1% TDS on transfer of virtual digital assets
@@ -201,13 +216,16 @@ sources:
     value: 0.01
     unit: fraction
     as_of: "2022-07-01"
-    publisher: Income Tax Department, Government of India
-    url: https://incometaxindia.gov.in/
+    publisher: Income Tax Department, Government of India (Section 194S; CBDT Circular 13/2022)
+    url: https://www.incometaxindia.gov.in/w/tds-on-payment-for-the-transfer-of-virtual-digital-assets-vdas-
     note: >-
-      Introduced by the Finance Act, 2022 as Section 194S of the Income-tax Act, 1961, carried into
-      the Income-tax Act, 2025. The exchange withholds 1% of the sale value on every VDA transfer,
-      including crypto to crypto swaps. It is credited against your tax, or refunded, only when you
-      file your return.
+      Introduced by the Finance Act, 2022 as Section 194S of the Income-tax Act, 1961, and carried into
+      the Income-tax Act, 2025 under new numbering; we cite the 1961 section because exchanges and CBDT
+      guidance still use it. The exchange withholds 1% on every VDA transfer, including crypto to crypto
+      swaps. Per CBDT Circular 13/2022 the base is the consideration excluding GST and the exchange's
+      own charges, so the model withholds on proceeds net of fee and GST. No TDS is due if the year's
+      total is under ₹10,000 (₹50,000 for a "specified person"); the model always withholds. TDS is
+      credited against your tax, or refunded, only when you file your return.
 
   - id: vda-tax-115bbh
     label: 30% tax on income from transfer of virtual digital assets, plus 4% cess
@@ -216,10 +234,10 @@ sources:
     value: 0.30
     unit: fraction
     as_of: "2022-04-01"
-    publisher: Income Tax Department, Government of India
+    publisher: Income Tax Department, Government of India (Section 115BBH, Finance Act 2022)
     url: https://incometaxindia.gov.in/
     note: >-
-      Section 115BBH: gains are taxed at a flat 30%, only the cost of acquisition is deductible (no
+      Section 115BBH of the Income-tax Act, 1961 (carried into the 2025 Act): gains are taxed at a flat 30%, only the cost of acquisition is deductible (no
       fees), and losses cannot be set off against anything. 4% health and education cess applies on
       top. Surcharge at high incomes is ignored. We assume a cost basis equal to the mid-market INR
       value of the USDC, which is the right model when you are moving your own money or a gift from
@@ -232,6 +250,6 @@ sources:
     value: 0.04
     unit: fraction
     as_of: "2018-04-01"
-    publisher: Income Tax Department, Government of India
+    publisher: Income Tax Department, Government of India (Finance Act, 2018)
     url: https://incometaxindia.gov.in/
     note: 4% of the tax amount.

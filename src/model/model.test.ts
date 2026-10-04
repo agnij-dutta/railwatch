@@ -60,8 +60,10 @@ function fixture(overrides: Partial<ModelInputs> = {}): ModelInputs {
       chaseUsdWireFeeUsd: 40,
       correspondentFeeUsd: 20,
       gstRate: 0.18,
+      gstOnFeesRate: 0.18,
       coinbaseAchDepositUsd: 0,
       coinbaseUsdcConversionFeeRate: 0,
+      exchangeDepositFeeUsd: 0,
       exchangeTakerFeeRate: 0.005,
       exchangeSwapFeeRate: 0.001,
       tdsRate: 0.01,
@@ -179,10 +181,12 @@ describe("SWIFT in USD route", () => {
 describe("stablecoin route", () => {
   it("matches a hand calculation on the direct USDC/INR path", () => {
     const r = stablecoinPath(fixture(), 1000, "base", "direct")!;
-    // gross ₹1,00,000. fee ₹500, GST ₹90, TDS ₹1,000, withdrawal ₹10,
-    // VDA tax 31.2% of (1,00,000 - 95,000) = ₹1,560.
-    expect(r.receivedInr).toBeCloseTo(100_000 - 500 - 90 - 1_000 - 10 - 1_560, 6);
-    expect(r.lossInr).toBeCloseTo(95_000 - 96_840, 6);
+    // gross ₹1,00,000. fee ₹500, GST ₹90, TDS 1% of (1,00,000 - 500 - 90) = ₹994.10 (Circular 13/2022),
+    // withdrawal ₹10, VDA tax 31.2% of (1,00,000 - 95,000) = ₹1,560 (fees not deductible under 115BBH).
+    const received = 100_000 - 500 - 90 - 994.1 - 10 - 1_560;
+    expect(r.receivedInr).toBeCloseTo(received, 6);
+    expect(r.lossInr).toBeCloseTo(95_000 - received, 6);
+    expect(r.hops.find((h) => h.id === "tds")!.inr).toBeCloseTo(994.1, 6);
     const premium = r.hops.find((h) => h.id === "sell-for-inr")!;
     expect(premium.category).toBe("premium");
     expect(premium.inr).toBeCloseTo(-5_000, 6);
@@ -192,7 +196,7 @@ describe("stablecoin route", () => {
   it("adds TDS back only in the refund lens", () => {
     const base = stablecoinPath(fixture(), 1000, "base", "direct")!;
     const refunded = stablecoinPath(fixture(), 1000, "base", "direct", { tdsRefunded: true })!;
-    expect(refunded.receivedInr - base.receivedInr).toBeCloseTo(1_000, 6);
+    expect(refunded.receivedInr - base.receivedInr).toBeCloseTo(994.1, 6);
     expect(refunded.hops.at(-1)!.category).toBe("refund");
     expectReconciles(refunded);
   });
@@ -226,6 +230,26 @@ describe("stablecoin route", () => {
       },
     });
     expect(stablecoinRoute(thin, 1000, "base")).toBeNull();
+  });
+
+  it("takes TDS on the swap net of the swap fee and its GST", () => {
+    const via = stablecoinPath(fixture(), 1000, "base", "via-usdt")!;
+    // 1,000 USDC at 1 USDT; fee 1 USDT; GST 0.18; TDS 1% of 998.82 USDT, valued at mid.
+    expect(via.hops.find((h) => h.id === "swap-tds")!.inr).toBeCloseTo(9.9882 * MID, 6);
+  });
+
+  it("reads every rate in labels and caveats from params, so sources.yaml edits propagate", () => {
+    const inputs = fixture();
+    inputs.params = { ...inputs.params, tdsRate: 0.02, vdaTaxRate: 0.25, vdaCessRate: 0.05, exchangeDepositFeeUsd: 1, gstOnFeesRate: 0.1 };
+    const r = stablecoinPath(inputs, 1000, "base", "direct")!;
+    const text = JSON.stringify(r);
+    expect(text).toContain("2% TDS on sale");
+    expect(text).toContain("25% VDA tax on the gain, plus 5% cess");
+    expect(text).not.toMatch(/\b1% TDS|30% VDA|4% cess/);
+    expect(r.hops.find((h) => h.id === "exchange-deposit")!.inr).toBeCloseTo(MID, 9);
+    // $1 deposit fee leaves 999 USDC: fee 0.5% of ₹99,900 = ₹499.50, GST at 10% = ₹49.95.
+    expect(r.hops.find((h) => h.id === "trade-fee-gst")!.inr).toBeCloseTo(49.95, 6);
+    expectReconciles(r);
   });
 
   it("deducts the live network fee", () => {
@@ -276,6 +300,13 @@ describe("committed snapshot", () => {
       expect(recomputed.map((r) => [r.id, r.receivedInr])).toEqual(stored.map((r) => [r.id, r.receivedInr]));
     }
     expect(JSON.stringify(snap)).not.toMatch(/\u2014/);
+  });
+});
+
+describe("buildHeadline", () => {
+  it("fails loudly instead of inventing a headline with no licensed route", () => {
+    const stableOnly = computeRoutes(fixture(), 1000).filter((r) => r.family === "stablecoin");
+    expect(() => buildHeadline(stableOnly, 1000)).toThrow(/at least one bank or provider route/);
   });
 });
 

@@ -23,6 +23,11 @@ export interface StepMeta {
   detail: string;
 }
 
+/**
+ * A balance moving through a route. Each `step` records a Hop whose cost is the drop in the balance's
+ * INR value at mid-market. Values are kept as unrounded floats end to end; rounding happens only for display,
+ * so the telescoping identity sum(hop.inr) === idealInr - receivedInr holds to float precision.
+ */
 export class Flow {
   readonly hops: Hop[] = [];
   private bal: Balance;
@@ -84,7 +89,13 @@ export interface FillResult {
   levelsUsed: number;
 }
 
-/** Market-sell `qty` into a bid book (best price first). */
+/**
+ * Market-sell `qty` into a bid book, best price first, consuming each level fully before the next.
+ * This is how a taker market order fills, so large transfers pay for thin books. It ignores the
+ * exchange's minimum order size and tick rounding (both immaterial at these sizes) and assumes the book
+ * does not move between the snapshot and the trade. If the stored levels cannot absorb `qty`,
+ * `insufficient` is true and callers must not quote a price.
+ */
 export function sellIntoBids(bids: BookLevel[], qty: number): FillResult {
   let remaining = qty;
   let proceeds = 0;
@@ -109,10 +120,17 @@ export function sellIntoBids(bids: BookLevel[], qty: number): FillResult {
 
 /**
  * Taxable value of a currency-conversion service under Rule 32(2)(b) of the CGST Rules, 2017.
- * GST is then charged at 18% of this value.
- *   up to ₹1,00,000:          1% of gross amount, minimum ₹250
+ * GST is then charged at the standard 18% on this value.
+ *   up to ₹1,00,000:          1% of the gross amount, minimum ₹250
  *   ₹1,00,000 to ₹10,00,000:  ₹1,000 + 0.5% of the amount above ₹1,00,000
- *   above ₹10,00,000:         ₹5,500 + 0.1% of the amount above ₹10,00,000, maximum ₹60,000
+ *   above ₹10,00,000:         ₹5,500 + 0.1% of the amount above ₹10,00,000, value capped at ₹60,000
+ *
+ * Why (b) and not (a): Rule 32(2)(a) values the service as (bank rate minus RBI reference rate) times the
+ * units converted, which needs the bank's own reference spread. Rule 32(2)(b) is the slab method a supplier may
+ * opt into, and it is the method Indian banks commonly publish in their forex GST schedules. A bank using (a)
+ * would charge a different (usually similar) amount.
+ * The rule text says "0.5% of the gross amount"; banks apply the marginal reading used here, which is the only
+ * reading that is continuous at ₹1 lakh and ₹10 lakh (the tests pin that).
  */
 export function gstConversionTaxableValue(grossInr: number): number {
   if (grossInr <= 0) return 0;
@@ -121,10 +139,7 @@ export function gstConversionTaxableValue(grossInr: number): number {
   return Math.min(5_500 + 0.001 * (grossInr - 1_000_000), 60_000);
 }
 
+/** GST payable on a conversion of `grossInr`: the Rule 32(2)(b) taxable value times `gstRate`. */
 export function gstOnConversion(grossInr: number, gstRate: number): number {
   return gstConversionTaxableValue(grossInr) * gstRate;
-}
-
-export function round2(n: number): number {
-  return Math.round(n * 100) / 100;
 }

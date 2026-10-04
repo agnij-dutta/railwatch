@@ -9,6 +9,8 @@ export const inrSigned = (n: number) => {
 export const usd = (n: number) => `$${n.toLocaleString("en-US")}`;
 export const bps = (n: number) => `${Math.round(n)} bps`;
 export const rate = (n: number) => `₹${n.toFixed(2)}`;
+/** A fraction from sources.yaml as a percentage, e.g. 0.312 -> "31.2%". Keeps up to two decimals, drops trailing zeros. */
+export const pct = (fraction: number) => `${+(fraction * 100).toFixed(2)}%`;
 
 export function stamp(iso: string): string {
   const d = new Date(iso);
@@ -16,6 +18,3 @@ export function stamp(iso: string): string {
   const time = d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "UTC" });
   return `${date}, ${time} UTC`;
 }
-
-export const shortDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", timeZone: "UTC" });

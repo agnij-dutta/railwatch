@@ -20,5 +20,5 @@ export default defineConfig({
   base: "./",
   plugins: [react(), copySnapshot()],
   build: { outDir: "dist" },
-  test: { include: ["src/**/*.test.ts"] },
+  test: { include: ["src/**/*.test.ts", "scripts/**/*.test.ts"] },
 } as never);

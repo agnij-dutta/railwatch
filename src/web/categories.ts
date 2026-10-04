@@ -19,8 +19,3 @@ export const FAMILY_LABEL: Record<RouteFamily, string> = {
   provider: "Remittance",
   stablecoin: "Stablecoin",
 };
-
-export function fillFor(cat: HopCategory): string {
-  const c = CATEGORY[cat];
-  return c.pattern ? `url(#${c.pattern})` : c.color;
-}

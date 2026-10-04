@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 // Named imports let Vite tree-shake the precomputed `results` out of the bundle; the page recomputes from `inputs`.
 import { amountsUsd, defaultAmountUsd, generatedAt, headline, inputs, mid, sources, warnings } from "../../data/latest.json";
 import { computeRoutes, HEADLINE_SWIFT_ROUTE, type RouteResult, type Snapshot } from "../model";
-import { inr, stamp, usd } from "./format";
+import { inr, pct, stamp, usd } from "./format";
 import { Methodology } from "./Methodology";
 import { RouteBars } from "./RouteBars";
 import { RouteDetail } from "./RouteDetail";
 import { WinnerTable } from "./WinnerTable";
 
-export const snap = {
+const snap = {
   schemaVersion: 1,
   generatedAt,
   defaultAmountUsd,
@@ -98,6 +98,8 @@ function Hero({ routes, amount, tdsRefunded }: { routes: RouteResult[]; amount: 
   const stable = routes.find((r) => r.family === "stablecoin");
   const premiumHop = stable?.hops.find((h) => h.category === "premium");
   const premiumPct = premiumHop && stable ? (-premiumHop.inr / stable.idealInr) * 100 : 0;
+  const p = snap.inputs.params;
+  const vdaEffective = p.vdaTaxRate * (1 + p.vdaCessRate);
 
   return (
     <div className="hero">
@@ -128,7 +130,7 @@ function Hero({ routes, amount, tdsRefunded }: { routes: RouteResult[]; amount: 
       {stable && (
         <p className="hero-note">
           {premiumHop
-            ? `That edge is a ${premiumPct.toFixed(1)}% premium Indian exchanges pay for stablecoins, minus fees, 1% TDS${tdsRefunded ? " (here assumed refunded)" : ""} and a 31.2% tax reserve. It is a market quirk, not a cheaper pipe, and it carries tax, KYC and bank-freeze risk.`
+            ? `${stable.lossInr < 0 ? "That edge is" : "It starts from"} a ${premiumPct.toFixed(1)}% premium Indian exchanges pay for stablecoins, minus fees, ${pct(p.tdsRate)} TDS${tdsRefunded ? " (here assumed refunded)" : ""} and a ${pct(vdaEffective)} tax reserve on the gain. It is a market quirk, not a cheaper pipe, and it carries tax, KYC and bank-freeze risk.`
             : "No exchange premium at this amount: the stablecoin route is selling below mid-market."}{" "}
           <a href="#/methodology">How this is measured</a>
         </p>
@@ -172,8 +174,10 @@ function Controls(props: {
         <input type="checkbox" checked={props.tdsRefunded} onChange={(e) => props.setTdsRefunded(e.target.checked)} />
         <span className="switch" aria-hidden />
         <span>
-          Count the 1% TDS as refunded at tax filing
-          <small>Off = conservative: TDS treated as lost, 30% VDA tax plus cess reserved on any gain.</small>
+          Count the {pct(snap.inputs.params.tdsRate)} TDS as refunded at tax filing
+          <small>
+            Off = conservative: TDS treated as lost, {pct(snap.inputs.params.vdaTaxRate)} VDA tax plus {pct(snap.inputs.params.vdaCessRate)} cess reserved on any gain.
+          </small>
         </span>
       </label>
     </div>

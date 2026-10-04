@@ -1,5 +1,5 @@
 import type { Snapshot } from "../model";
-import { stamp } from "./format";
+import { pct, stamp } from "./format";
 
 const STATUS_TEXT = {
   live: "Fetched from a keyless public API on every snapshot.",
@@ -26,6 +26,10 @@ export function Methodology({ snap }: { snap: Snapshot }) {
         Every route starts with dollars in a US bank account and ends with rupees in an Indian bank account. We price each step, measure what it costs
         against one mid-market rate, and show the steps. Credibility is the whole point, so anything we could not fetch live is labeled{" "}
         <span className="badge modeled">modeled</span> and cited below with a date.
+      </p>
+      <p className="lede">
+        <strong>Not financial, tax or legal advice.</strong> This is a cost comparison built from public data and stated assumptions. Your bank, provider, tax
+        position and the law may differ. Check with a chartered accountant before acting on the stablecoin numbers.
       </p>
 
       <h2>The yardstick: one mid-market rate</h2>
@@ -83,16 +87,17 @@ export function Methodology({ snap }: { snap: Snapshot }) {
       <h3>The USDC rail</h3>
       <ol>
         <li>ACH the dollars to Coinbase and convert to USDC 1:1 (published: no fee for either).</li>
-        <li>Send USDC to an Indian exchange on Base or Solana. Network fee is live: Base gas price plus the L1 data fee, or Solana's base fee plus recent priority fees, priced in dollars at Coinbase spot. Coinbase may sponsor this fee; we charge it anyway.</li>
+        <li>Send USDC to an Indian exchange on Base or Solana. Network fee is live: Base gas price plus the L1 data fee, or Solana's base fee plus recent priority fees, priced in dollars at Coinbase spot. We charge it even when Coinbase absorbs it.</li>
         <li>
           Sell on CoinDCX. We market-sell the full amount into the live bid book, level by level, both directly on USDC/INR and via a USDC to USDT swap then
           USDT/INR, and keep whichever lands more. The swap path pays TDS twice.
         </li>
         <li>
-          Pay the exchange fee ({+(p.exchangeTakerFeeRate * 100).toFixed(2)}% assumed) plus 18% GST on it, have {+(p.tdsRate * 100).toFixed(2)}% TDS withheld, and withdraw rupees (₹{p.inrWithdrawalFeeInr} assumed).
+          Pay the exchange fee ({pct(p.exchangeTakerFeeRate)} assumed) plus {pct(p.gstOnFeesRate)} GST on it, have {pct(p.tdsRate)} TDS withheld under Section 194S
+          on the proceeds net of fee and GST (CBDT Circular 13/2022), and withdraw rupees (₹{p.inrWithdrawalFeeInr} assumed).
         </li>
         <li>
-          Reserve the 30% VDA tax plus 4% cess on any gain over a mid-market cost basis. Under Section 115BBH only the cost of acquisition is deductible, so fees do
+          Reserve the {pct(p.vdaTaxRate)} VDA tax plus {pct(p.vdaCessRate)} cess ({pct(p.vdaTaxRate * (1 + p.vdaCessRate))} in all) on any gain over a mid-market cost basis. Under Section 115BBH only the cost of acquisition is deductible, so fees do
           not reduce the gain.
         </li>
       </ol>
@@ -104,11 +109,11 @@ export function Methodology({ snap }: { snap: Snapshot }) {
           tax friction, scarce on and off ramps, and demand for dollars. It is the main reason the route can beat mid-market, and it can shrink or vanish.
         </li>
         <li>
-          <strong>TDS is real cash until you file.</strong> By default we count the 1% TDS as lost. Toggle it on the main page to see the number if it is fully credited
+          <strong>TDS is real cash until you file.</strong> By default we count the {pct(p.tdsRate)} TDS as lost. Toggle it on the main page to see the number if it is fully credited
           at filing, which can be many months later.
         </li>
         <li>
-          <strong>Tax depends on why you hold the USDC.</strong> Our 30% reserve assumes you are moving your own money or a gift from a relative, with a mid-market cost
+          <strong>Tax depends on why you hold the USDC.</strong> Our {pct(p.vdaTaxRate)} reserve assumes you are moving your own money or a gift from a relative, with a mid-market cost
           basis. If the USDC is payment for services, it is income on receipt, taxed at your slab rate, and the later gain is close to zero. Talk to a CA.
         </li>
         <li>
@@ -128,6 +133,7 @@ export function Methodology({ snap }: { snap: Snapshot }) {
         <li>Card or debit funding, which most providers price higher than bank funding.</li>
         <li>Rate movement while money is in flight.</li>
         <li>Income tax surcharge at high incomes.</li>
+        <li>The annual threshold below which no TDS is due (₹10,000, or ₹50,000 for some individuals). We always withhold.</li>
       </ul>
 
       <h2>Every source</h2>
