@@ -1,6 +1,6 @@
 {
   "name": "railwatch",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit -p . && vite build",
@@ -12,10 +12,21 @@
     "lint": "biome check .",
     "format": "biome check --write ."
   },
-  "keywords": [],
-  "author": "Agnij Dutta",
+  "keywords": [
+    "remittance",
+    "india",
+    "usd-inr",
+    "stablecoin",
+    "usdc",
+    "swift",
+    "fx",
+    "tds",
+    "gst",
+    "cost-model"
+  ],
+  "author": "Agnij Dutta (https://x.com/0xholmesdev)",
   "license": "MIT",
-  "description": "Live, hop-by-hop cost of sending USD to an Indian bank account: SWIFT vs remittance providers vs a USDC rail.",
+  "description": "Live, hop-by-hop cost of sending USD to an Indian bank account: bank wires, remittance providers and a USDC route, every number cited.",
   "dependencies": {
     "@fontsource/fraunces": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
@@ -36,5 +47,16 @@
     "yaml": "^2.9.1"
   },
   "private": true,
-  "type": "module"
+  "type": "module",
+  "homepage": "https://github.com/agnij-dutta/railwatch#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agnij-dutta/railwatch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/agnij-dutta/railwatch/issues"
+  },
+  "engines": {
+    "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
+  }
 }

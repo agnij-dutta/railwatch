@@ -23,7 +23,7 @@ export const AMOUNTS_USD = [100, 200, 300, 500, 750, 1000, 1500, 2000, 3000, 500
 export const DEFAULT_AMOUNT = 1000;
 /** Bid levels kept per book. Enough for $10,000 on CoinDCX's INR books at the time of writing; if not, the route is dropped with a warning. */
 const BOOK_LEVELS = 50;
-const UA = "railwatch/1.0 (+https://github.com/agnij-dutta/railwatch)";
+const UA = "railwatch/0.1 (+https://github.com/agnij-dutta/railwatch)";
 const USDC_MINT_SOLANA = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 
 const warnings: string[] = [];

@@ -1,4 +1,18 @@
-node_modules
-dist
-.DS_Store
+# dependencies and build output
+node_modules/
+dist/
+*.tsbuildinfo
+
+# caches and tooling
+.vite/
+.cache/
+coverage/
 *.log
+.DS_Store
+
+# env and keys (Rail Watch needs none, this is a guard)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
