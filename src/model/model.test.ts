@@ -303,6 +303,22 @@ describe("committed snapshot", () => {
     }
     expect(JSON.stringify(snap)).not.toMatch(/\u2014/);
   });
+
+  it.skipIf(!existsSync(path))("cites a sources.yaml entry for every hop, with matching status", () => {
+    const snap = JSON.parse(readFileSync(path, "utf8")) as Snapshot;
+    const byId = new Map(snap.sources.map((src) => [src.id, src]));
+    for (const routes of Object.values(snap.results)) {
+      for (const hop of routes.flatMap((r) => r.hops)) {
+        expect(hop.sourceIds.length, hop.id).toBeGreaterThan(0);
+        for (const id of hop.sourceIds) expect(byId.has(id), `${hop.id} cites unknown source ${id}`).toBe(true);
+        // A hop labeled modeled or statutory must cite at least one dated entry of that status.
+        if (hop.status !== "live") {
+          const dated = hop.sourceIds.map((id) => byId.get(id)).filter((src) => src?.status === hop.status && src.asOf);
+          expect(dated.length, `${hop.id} is ${hop.status} but cites no dated ${hop.status} source`).toBeGreaterThan(0);
+        }
+      }
+    }
+  });
 });
 
 describe("buildHeadline", () => {
