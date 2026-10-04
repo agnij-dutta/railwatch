@@ -1,7 +1,7 @@
 import { cpSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
+import { defineConfig, type Plugin } from "vite";
 
 // Ship the snapshot JSON next to the site so dist/data/latest.json doubles as a public API.
 function copySnapshot(): Plugin {

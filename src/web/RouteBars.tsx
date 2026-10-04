@@ -42,14 +42,16 @@ export function RouteBars({ routes, selectedId, onSelect }: { routes: RouteResul
             ))}
         </ul>
       </div>
-      <p className="bars-sub">Loss versus mid-market, per route. Bars to the right are money lost on the way. Hatched bars to the left are money gained. Click a route for every hop.</p>
+      <p className="bars-sub">
+        Loss versus mid-market, per route. Bars to the right are money lost on the way. Hatched bars to the left are money gained. Click a route for every hop.
+      </p>
       <ol className="bar-rows">
         {segs.map(({ r, costs, gains }) => {
           let x = zero;
           let gx = zero;
           return (
             <li key={r.id}>
-              <button className={`bar-row ${r.id === selectedId ? "selected" : ""} fam-${r.family}`} onClick={() => onSelect(r.id)}>
+              <button type="button" className={`bar-row ${r.id === selectedId ? "selected" : ""} fam-${r.family}`} onClick={() => onSelect(r.id)}>
                 <span className="bar-name">
                   <span className="fam">{FAMILY_LABEL[r.family]}</span>
                   {r.shortName}

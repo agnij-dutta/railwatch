@@ -79,7 +79,9 @@ function Home() {
         <Controls amount={amount} setAmount={setAmount} tdsRefunded={tdsRefunded} setTdsRefunded={setTdsRefunded} />
         <RouteBars routes={routes} selectedId={selected.id} onSelect={setSelectedId} />
         <div className="card-foot">
-          <span>Rail Watch · mid-market ₹{snap.mid.rate.toFixed(2)} · data {stamp(snap.generatedAt)}</span>
+          <span>
+            Rail Watch · mid-market ₹{snap.mid.rate.toFixed(2)} · data {stamp(snap.generatedAt)}
+          </span>
           <span>Open data, every hop cited</span>
         </div>
       </section>
@@ -92,9 +94,10 @@ function Home() {
 }
 
 function Hero({ routes, amount, tdsRefunded }: { routes: RouteResult[]; amount: number; tdsRefunded: boolean }) {
-  const swift = routes.find((r) => r.id === HEADLINE_SWIFT_ROUTE) ?? routes.find((r) => r.family === "bank")!;
+  const swift = routes.find((r) => r.id === HEADLINE_SWIFT_ROUTE) ?? routes.find((r) => r.family === "bank");
   const licensed = routes.filter((r) => r.family !== "stablecoin");
   const best = licensed[0];
+  if (!swift || !best) return <p className="kicker">No bank or provider quotes in this snapshot at {usd(amount)}.</p>;
   const stable = routes.find((r) => r.family === "stablecoin");
   const premiumHop = stable?.hops.find((h) => h.category === "premium");
   const premiumPct = premiumHop && stable ? (-premiumHop.inr / stable.idealInr) * 100 : 0;
@@ -139,12 +142,7 @@ function Hero({ routes, amount, tdsRefunded }: { routes: RouteResult[]; amount: 
   );
 }
 
-function Controls(props: {
-  amount: number;
-  setAmount: (n: number) => void;
-  tdsRefunded: boolean;
-  setTdsRefunded: (b: boolean) => void;
-}) {
+function Controls(props: { amount: number; setAmount: (n: number) => void; tdsRefunded: boolean; setTdsRefunded: (b: boolean) => void }) {
   const amounts = snap.amountsUsd;
   const idx = Math.max(0, amounts.indexOf(props.amount));
   return (
@@ -176,7 +174,8 @@ function Controls(props: {
         <span>
           Count the {pct(snap.inputs.params.tdsRate)} TDS as refunded at tax filing
           <small>
-            Off = conservative: TDS treated as lost, {pct(snap.inputs.params.vdaTaxRate)} VDA tax plus {pct(snap.inputs.params.vdaCessRate)} cess reserved on any gain.
+            Off = conservative: TDS treated as lost, {pct(snap.inputs.params.vdaTaxRate)} VDA tax plus {pct(snap.inputs.params.vdaCessRate)} cess reserved on
+            any gain.
           </small>
         </span>
       </label>
@@ -188,13 +187,13 @@ function Footer() {
   return (
     <footer className="footer">
       <p>
-        Rail Watch compares what actually lands in an Indian bank account, hop by hop. Live inputs come from keyless public APIs. Anything that is not
-        live is labeled <span className="badge modeled">modeled</span> and cited with a date on the <a href="#/methodology">methodology</a> page.
+        Rail Watch compares what actually lands in an Indian bank account, hop by hop. Live inputs come from keyless public APIs. Anything that is not live is
+        labeled <span className="badge modeled">modeled</span> and cited with a date on the <a href="#/methodology">methodology</a> page.
       </p>
       <p className="muted">
-        Not financial, tax or legal advice. Built by <a href="https://x.com/0xholmesdev">@0xholmesdev</a> · open source · snapshot {stamp(snap.generatedAt)} · {snap.mid.method}
+        Not financial, tax or legal advice. Built by <a href="https://x.com/0xholmesdev">@0xholmesdev</a> · open source · snapshot {stamp(snap.generatedAt)} ·{" "}
+        {snap.mid.method}
       </p>
     </footer>
   );
 }
-

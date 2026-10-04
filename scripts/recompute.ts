@@ -31,7 +31,7 @@ async function main() {
     console.log("dry run: nothing written");
     return;
   }
-  const json = JSON.stringify(snap, null, 1) + "\n";
+  const json = `${JSON.stringify(snap, null, 1)}\n`;
   await writeFile(latest, json);
   const history = join(ROOT, `data/history/${snap.generatedAt.slice(0, 10)}.json`);
   await writeFile(history, json);

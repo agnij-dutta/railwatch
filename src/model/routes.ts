@@ -16,15 +16,28 @@ interface ProviderMeta {
   caveats: string[];
 }
 
-const BANK_CAVEATS = [
-  "Intermediary (correspondent) banks and the receiving Indian bank can deduct further fees. Those are not included in this quote.",
-];
+const BANK_CAVEATS = ["Intermediary (correspondent) banks and the receiving Indian bank can deduct further fees. Those are not included in this quote."];
 
 /** Providers we show from Wise's comparison feed. SBI is excluded: its quote is the receiving-side rate used inside the SWIFT route. */
 export const PROVIDERS: Record<string, ProviderMeta> = {
-  wise: { name: "Wise", shortName: "Wise", family: "provider", caveats: ["Wise publishes the comparison feed this data comes from. Its own rate is the mid-market rate it uses; all fees are in the upfront fee."] },
-  remitly: { name: "Remitly", shortName: "Remitly", family: "provider", caveats: ["Remitly rates in comparison feeds can reflect promotional first-transfer pricing. Repeat transfers may get a lower rate."] },
-  "western-union": { name: "Western Union", shortName: "Western Union", family: "provider", caveats: ["Online bank-to-bank pricing. Cash pickup and card funding are priced differently."] },
+  wise: {
+    name: "Wise",
+    shortName: "Wise",
+    family: "provider",
+    caveats: ["Wise publishes the comparison feed this data comes from. Its own rate is the mid-market rate it uses; all fees are in the upfront fee."],
+  },
+  remitly: {
+    name: "Remitly",
+    shortName: "Remitly",
+    family: "provider",
+    caveats: ["Remitly rates in comparison feeds can reflect promotional first-transfer pricing. Repeat transfers may get a lower rate."],
+  },
+  "western-union": {
+    name: "Western Union",
+    shortName: "Western Union",
+    family: "provider",
+    caveats: ["Online bank-to-bank pricing. Cash pickup and card funding are priced differently."],
+  },
   "world-remit": { name: "WorldRemit", shortName: "WorldRemit", family: "provider", caveats: [] },
   instarem: { name: "Instarem", shortName: "Instarem", family: "provider", caveats: [] },
   ofx: { name: "OFX", shortName: "OFX", family: "provider", caveats: ["OFX targets larger transfers and may have minimums."] },
@@ -32,10 +45,7 @@ export const PROVIDERS: Record<string, ProviderMeta> = {
   "wells-fargo": { name: "SWIFT wire · Wells Fargo, converted to INR in the US", shortName: "Wells Fargo wire", family: "bank", caveats: BANK_CAVEATS },
 };
 
-function finalize(
-  flow: Flow,
-  base: Omit<RouteResult, "midRate" | "idealInr" | "receivedInr" | "lossInr" | "lossBps" | "hops" | "hasModeled">,
-): RouteResult {
+function finalize(flow: Flow, base: Omit<RouteResult, "midRate" | "idealInr" | "receivedInr" | "lossInr" | "lossBps" | "hops" | "hasModeled">): RouteResult {
   const bal = flow.balance;
   if (bal.asset !== "INR") throw new Error(`route ${base.id} did not end in INR`);
   const idealInr = base.amountUsd * flow.midRate;
@@ -173,12 +183,7 @@ type OfframpPath = "direct" | "via-usdt";
  * Stablecoin rail: USD to USDC on Coinbase, send on-chain to an Indian exchange, sell for INR, withdraw.
  * Tries both the direct USDC/INR book and a USDC to USDT to INR path and keeps whichever lands more INR.
  */
-export function stablecoinRoute(
-  inputs: ModelInputs,
-  amountUsd: number,
-  network: "base" | "solana",
-  opts: ModelOptions = {},
-): RouteResult | null {
+export function stablecoinRoute(inputs: ModelInputs, amountUsd: number, network: "base" | "solana", opts: ModelOptions = {}): RouteResult | null {
   const candidates = (["direct", "via-usdt"] as OfframpPath[])
     .map((path) => stablecoinPath(inputs, amountUsd, network, path, opts))
     .filter((r): r is RouteResult => r !== null);
@@ -200,9 +205,10 @@ export function stablecoinPath(
   const usdcInr = inputs.books.usdcInr;
   const usdtInr = inputs.books.usdtInr;
   const usdcUsdt = inputs.books.usdcUsdt;
-  if (!chain) return null;
-  if (path === "direct" && !usdcInr) return null;
-  if (path === "via-usdt" && (!usdtInr || !usdcUsdt)) return null;
+  // The book the final sale walks: USDC/INR directly, or USDT/INR after a USDC/USDT swap.
+  const book = path === "direct" ? usdcInr : usdtInr;
+  if (!chain || !book) return null;
+  if (path === "via-usdt" && !usdcUsdt) return null;
 
   const netName = network === "base" ? "Base" : "Solana";
   const flow = new Flow(midRate, { asset: "USD", qty: amountUsd });
@@ -258,8 +264,8 @@ export function stablecoinPath(
 
   const tdsLegs: number[] = []; // INR value of each TDS deduction, for the refund lens
 
-  if (path === "via-usdt") {
-    const fill = sellIntoBids(usdcUsdt!.bids, flow.balance.qty);
+  if (path === "via-usdt" && usdcUsdt) {
+    const fill = sellIntoBids(usdcUsdt.bids, flow.balance.qty);
     if (fill.insufficient) return null;
     flow.step(
       {
@@ -312,7 +318,6 @@ export function stablecoinPath(
     );
   }
 
-  const book = path === "direct" ? usdcInr! : usdtInr!;
   const coin = path === "direct" ? "USDC" : "USDT";
   const fill = sellIntoBids(book.bids, flow.balance.qty);
   if (fill.insufficient) return null;
@@ -441,12 +446,12 @@ export function stablecoinPath(
 /** Caveats shown under every stablecoin route. Rates are read from params so they track sources.yaml. */
 export function stablecoinCaveats(p: ModeledParams): string[] {
   return [
-  "Indian exchanges price stablecoins above the mid-market rate. That premium is a market quirk driven by tax friction and limited ramps, not a fee advantage, and it can shrink or vanish.",
-  `Profit on selling a virtual digital asset is taxed at a flat ${pct(p.vdaTaxRate)} plus ${pct(p.vdaCessRate)} cess, with no deduction for fees and no loss set-off. We reserve that tax on any gain over a mid-market cost basis. If the USDC is received as payment for services, the treatment differs: talk to a CA.`,
-  `${pct(p.tdsRate)} TDS is withheld on every sale and swap. It is credited against your tax or refunded only when you file, so it is a real cash cost until then.`,
-  "No FIRC or FIRA is issued. Exporters cannot use this route as proof of inward remittance for GST export of services, and it does not count as a foreign inward remittance under FEMA reporting.",
-  "Both ends require full KYC. Indian exchanges must be registered with FIU-IND and may ask for the source of external deposits. Some Indian banks have frozen accounts receiving exchange withdrawals.",
-  "Sending the wrong token or network to an exchange address is usually unrecoverable. Confirm the exchange supports deposits of that token on that network first.",
+    "Indian exchanges price stablecoins above the mid-market rate. That premium is a market quirk driven by tax friction and limited ramps, not a fee advantage, and it can shrink or vanish.",
+    `Profit on selling a virtual digital asset is taxed at a flat ${pct(p.vdaTaxRate)} plus ${pct(p.vdaCessRate)} cess, with no deduction for fees and no loss set-off. We reserve that tax on any gain over a mid-market cost basis. If the USDC is received as payment for services, the treatment differs: talk to a CA.`,
+    `${pct(p.tdsRate)} TDS is withheld on every sale and swap. It is credited against your tax or refunded only when you file, so it is a real cash cost until then.`,
+    "No FIRC or FIRA is issued. Exporters cannot use this route as proof of inward remittance for GST export of services, and it does not count as a foreign inward remittance under FEMA reporting.",
+    "Both ends require full KYC. Indian exchanges must be registered with FIU-IND and may ask for the source of external deposits. Some Indian banks have frozen accounts receiving exchange withdrawals.",
+    "Sending the wrong token or network to an exchange address is usually unrecoverable. Confirm the exchange supports deposits of that token on that network first.",
   ];
 }
 
@@ -494,6 +499,6 @@ export function buildHeadline(routes: RouteResult[], amountUsd: number): Headlin
     swift: { routeId: swift.id, name: swift.shortName, lossInr: swift.lossInr },
     bestLicensed: { routeId: best.id, name: best.shortName, lossInr: best.lossInr },
     stablecoin: stable ? { routeId: stable.id, name: stable.shortName, lossInr: stable.lossInr } : null,
-    text: parts.join("") + ". Here's every hop.",
+    text: `${parts.join("")}. Here's every hop.`,
   };
 }

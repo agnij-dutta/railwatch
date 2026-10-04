@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { amountRows, HEADLINE_SWIFT_ROUTE, licensedWinnerRanges, stablecoinWins, type Snapshot } from "../model";
+import { amountRows, HEADLINE_SWIFT_ROUTE, licensedWinnerRanges, type Snapshot, stablecoinWins } from "../model";
 import { bps, inrSigned, usd } from "./format";
 
 function rangeText(from: number, to: number, isLast: boolean, isFirst: boolean): string {
@@ -30,8 +30,7 @@ export function WinnerTable({
       <p className="kicker">The slider insight</p>
       <h2>The cheapest route changes with the amount</h2>
       <p className="lede">
-        Fixed fees punish small transfers, percentage spreads punish large ones, and order books run out of depth.{" "}
-        Among licensed routes the winner is{" "}
+        Fixed fees punish small transfers, percentage spreads punish large ones, and order books run out of depth. Among licensed routes the winner is{" "}
         {ranges.map((r, i) => (
           <span key={r.routeId + r.from}>
             <strong>{r.name}</strong> {rangeText(r.from, r.to, i === ranges.length - 1, i === 0)}
@@ -88,7 +87,9 @@ export function WinnerTable({
           </tbody>
         </table>
       </div>
-      <p className="muted small">Negative numbers are money lost versus mid-market, positive numbers are money gained. Click a row to load that amount above.</p>
+      <p className="muted small">
+        Negative numbers are money lost versus mid-market, positive numbers are money gained. Click a row to load that amount above.
+      </p>
     </section>
   );
 }

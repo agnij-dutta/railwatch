@@ -7,15 +7,15 @@ import {
   Flow,
   gstConversionTaxableValue,
   gstOnConversion,
+  type ModelInputs,
+  type ProviderQuote,
   providerRoute,
+  type RouteResult,
+  type Snapshot,
   sellIntoBids,
   stablecoinPath,
   stablecoinRoute,
   swiftUsdRoute,
-  type ModelInputs,
-  type ProviderQuote,
-  type RouteResult,
-  type Snapshot,
 } from "./index";
 
 const MID = 95;
@@ -98,7 +98,9 @@ describe("Flow", () => {
   it("values stablecoins at par and records the drop per step", () => {
     const f = new Flow(MID, { asset: "USD", qty: 100 });
     const meta = { id: "x", label: "x", category: "fee" as const, status: "modeled" as const, sourceIds: [], detail: "" };
-    f.deduct(meta, 1).convert({ ...meta, id: "y" }, "USDC", 1).convert({ ...meta, id: "z" }, "INR", 96);
+    f.deduct(meta, 1)
+      .convert({ ...meta, id: "y" }, "USDC", 1)
+      .convert({ ...meta, id: "z" }, "INR", 96);
     expect(f.hops.map((h) => h.inr)).toEqual([95, 0, -99]);
     expect(f.balance).toEqual({ asset: "INR", qty: 99 * 96 });
   });

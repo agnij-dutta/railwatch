@@ -55,7 +55,9 @@ export function RouteDetail({ route }: { route: RouteResult }) {
             <tr className="start">
               <td>
                 <strong>Start: ${route.amountUsd.toLocaleString("en-US")} in a US bank account</strong>
-                <span className="detail-text">Worth {inr(route.idealInr)} at mid-market {rate(route.midRate)}</span>
+                <span className="detail-text">
+                  Worth {inr(route.idealInr)} at mid-market {rate(route.midRate)}
+                </span>
               </td>
               <td />
               <td />

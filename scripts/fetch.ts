@@ -8,10 +8,10 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  buildHeadline,
-  computeRoutes,
   type BookLevel,
+  buildHeadline,
   type ChainFeeInput,
+  computeRoutes,
   type MidSource,
   type ModelInputs,
   type OrderBookInput,
@@ -95,18 +95,14 @@ interface WiseComparison {
 }
 
 async function fetchWise(amount: number): Promise<WiseComparison> {
-  return getJson<WiseComparison>(
-    `https://api.wise.com/v4/comparisons/?sourceCurrency=USD&targetCurrency=INR&sendAmount=${amount}`,
-  );
+  return getJson<WiseComparison>(`https://api.wise.com/v4/comparisons/?sourceCurrency=USD&targetCurrency=INR&sendAmount=${amount}`);
 }
 
 // ------------------------------------------------------------------ order books
 
 async function fetchBook(pair: string): Promise<OrderBookInput | null> {
   try {
-    const d = await getJson<{ timestamp: number; bids: Record<string, string> }>(
-      `https://public.coindcx.com/market_data/orderbook?pair=${pair}`,
-    );
+    const d = await getJson<{ timestamp: number; bids: Record<string, string> }>(`https://public.coindcx.com/market_data/orderbook?pair=${pair}`);
     const bids: BookLevel[] = Object.entries(d.bids)
       .map(([p, q]) => [Number(p), Number(q)] as BookLevel)
       .filter(([p, q]) => p > 0 && q > 0)
@@ -132,7 +128,7 @@ async function fetchBaseFee(): Promise<ChainFeeInput | null> {
     const url = "https://mainnet.base.org";
     const gasPrice = BigInt(await rpc<string>(url, "eth_gasPrice", []));
     // GasPriceOracle.getL1FeeUpperBound(uint256 unsignedTxSize), selector 0xf1c7a58b, size 300 bytes.
-    const data = "0xf1c7a58b" + (300).toString(16).padStart(64, "0");
+    const data = `0xf1c7a58b${(300).toString(16).padStart(64, "0")}`;
     const l1Fee = BigInt(await rpc<string>(url, "eth_call", [{ to: "0x420000000000000000000000000000000000000F", data }, "latest"]));
     const gasUnits = 65_000n;
     const totalWei = gasPrice * gasUnits + l1Fee;
@@ -152,9 +148,7 @@ async function fetchBaseFee(): Promise<ChainFeeInput | null> {
 
 async function fetchSolanaFee(): Promise<ChainFeeInput | null> {
   try {
-    const fees = await rpc<{ prioritizationFee: number }[]>("https://api.mainnet-beta.solana.com", "getRecentPrioritizationFees", [
-      [USDC_MINT_SOLANA],
-    ]);
+    const fees = await rpc<{ prioritizationFee: number }[]>("https://api.mainnet-beta.solana.com", "getRecentPrioritizationFees", [[USDC_MINT_SOLANA]]);
     const sorted = fees.map((f) => f.prioritizationFee).sort((a, b) => a - b);
     const p75 = sorted.length ? sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * 0.75))] : 0;
     const cu = 30_000;
@@ -277,7 +271,9 @@ export function computeResults(
     results[String(amount)] = routes;
     for (const net of ["base", "solana"] as const) {
       if (!routes.some((r) => r.id === `usdc-${net}`)) {
-        warnings.push(`USDC via ${net} not priced at $${amount}: chain fee or order book missing, or the stored ${BOOK_LEVELS} bid levels cannot absorb the amount`);
+        warnings.push(
+          `USDC via ${net} not priced at $${amount}: chain fee or order book missing, or the stored ${BOOK_LEVELS} bid levels cannot absorb the amount`,
+        );
       }
     }
   }
@@ -299,14 +295,14 @@ export function printSummary(snap: Snapshot): void {
       `  ${r.shortName.padEnd(18)} ₹${Math.round(r.receivedInr).toLocaleString("en-IN").padStart(9)}  loss ₹${Math.round(r.lossInr).toLocaleString("en-IN").padStart(7)}  ${r.lossBps.toFixed(0).padStart(5)} bps`,
     );
   }
-  if (snap.warnings.length) console.warn("warnings:\n  " + snap.warnings.join("\n  "));
+  if (snap.warnings.length) console.warn(`warnings:\n  ${snap.warnings.join("\n  ")}`);
 }
 
 async function main() {
   const dry = process.argv.includes("--dry");
   const snap = await buildSnapshot();
   const day = snap.generatedAt.slice(0, 10);
-  const json = JSON.stringify(snap, null, 1) + "\n";
+  const json = `${JSON.stringify(snap, null, 1)}\n`;
   printSummary(snap);
   if (dry) {
     console.log("dry run: nothing written");

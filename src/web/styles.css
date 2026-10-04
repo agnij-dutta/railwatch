@@ -294,6 +294,7 @@ h2 {
   background: var(--c);
 }
 .hatched {
+  /* biome-ignore lint/complexity/noImportantStyles: must beat the solid fill that .seg and .swatch set at higher specificity */
   background: repeating-linear-gradient(-45deg, var(--c) 0 2px, transparent 2px 5px) !important;
   outline: 1px solid var(--c);
   outline-offset: -1px;
