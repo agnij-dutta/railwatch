@@ -183,7 +183,8 @@ export function Methodology({ snap }: { snap: Snapshot }) {
       <h2>Data</h2>
       <p>
         The full snapshot, inputs and computed routes included, is at <a href="./data/latest.json">data/latest.json</a>. Snapshots are committed daily to the
-        repository under <code>data/history/</code>. Generated {stamp(snap.generatedAt)}.
+        repository under <code>data/history/</code>. Live inputs fetched {stamp(snap.generatedAt)}.
+        {snap.recomputedAt && <> Results recomputed {stamp(snap.recomputedAt)} from those same inputs after a change to sources.yaml.</>}
       </p>
     </main>
   );

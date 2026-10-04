@@ -1,7 +1,8 @@
 import { cpSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
-import { defineConfig, type Plugin } from "vite";
+import type { Plugin } from "vite";
+import { defineConfig } from "vitest/config";
 
 // Ship the snapshot JSON next to the site so dist/data/latest.json doubles as a public API.
 function copySnapshot(): Plugin {
@@ -9,8 +10,8 @@ function copySnapshot(): Plugin {
     name: "copy-snapshot",
     apply: "build",
     closeBundle() {
-      const src = resolve(__dirname, "data");
-      if (existsSync(src)) cpSync(src, resolve(__dirname, "dist/data"), { recursive: true });
+      const src = resolve(import.meta.dirname, "data");
+      if (existsSync(src)) cpSync(src, resolve(import.meta.dirname, "dist/data"), { recursive: true });
     },
   };
 }
@@ -21,4 +22,4 @@ export default defineConfig({
   plugins: [react(), copySnapshot()],
   build: { outDir: "dist" },
   test: { include: ["src/**/*.test.ts", "scripts/**/*.test.ts"] },
-} as never);
+});

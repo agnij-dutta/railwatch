@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 // Named imports let Vite tree-shake the precomputed `results` out of the bundle; the page recomputes from `inputs`.
-import { amountsUsd, defaultAmountUsd, generatedAt, headline, inputs, mid, sources, warnings } from "../../data/latest.json";
+import { amountsUsd, defaultAmountUsd, generatedAt, headline, inputs, mid, recomputedAt, sources, warnings } from "../../data/latest.json";
 import { computeRoutes, HEADLINE_SWIFT_ROUTE, type RouteResult, type Snapshot } from "../model";
 import { inr, pct, stamp, usd } from "./format";
 import { Methodology } from "./Methodology";
@@ -11,6 +11,7 @@ import { WinnerTable } from "./WinnerTable";
 const snap = {
   schemaVersion: 1,
   generatedAt,
+  recomputedAt,
   defaultAmountUsd,
   amountsUsd,
   mid,

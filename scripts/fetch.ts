@@ -243,6 +243,7 @@ export async function buildSnapshot(): Promise<Snapshot> {
   return {
     schemaVersion: 1,
     generatedAt: now(),
+    recomputedAt: null,
     defaultAmountUsd: DEFAULT_AMOUNT,
     amountsUsd,
     mid: { rate: midRate, method: `median of ${okRates.length} sources`, sources: midSources },

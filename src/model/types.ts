@@ -172,7 +172,7 @@ export interface Snapshot {
   /** When the live inputs were fetched. */
   generatedAt: string;
   /** Set by `npm run recompute` when results were rebuilt from stored live inputs with edited sources.yaml params. */
-  recomputedAt?: string;
+  recomputedAt: string | null;
   defaultAmountUsd: number;
   amountsUsd: number[];
   mid: { rate: number; method: string; sources: MidSource[] };
