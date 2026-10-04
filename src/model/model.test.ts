@@ -261,7 +261,7 @@ describe("computeRoutes", () => {
     expect(h.swift.routeId).toBe("chase");
     expect(h.bestLicensed.routeId).toBe("remitly");
     expect(h.stablecoin?.routeId).toMatch(/^usdc-/);
-    expect(h.text).not.toMatch(/—/);
+    expect(h.text).not.toMatch(/\u2014/);
   });
 });
 
@@ -275,7 +275,7 @@ describe("committed snapshot", () => {
       const recomputed = computeRoutes(snap.inputs, amount);
       expect(recomputed.map((r) => [r.id, r.receivedInr])).toEqual(stored.map((r) => [r.id, r.receivedInr]));
     }
-    expect(JSON.stringify(snap)).not.toMatch(/—/);
+    expect(JSON.stringify(snap)).not.toMatch(/\u2014/);
   });
 });
 
