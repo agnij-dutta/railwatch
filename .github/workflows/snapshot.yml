@@ -1,0 +1,45 @@
+# Refreshes the Rail Watch snapshot daily and commits it.
+# Not enabled by default: GitHub runs scheduled workflows only on the default branch of a pushed repo,
+# and this one also needs "Read and write permissions" for GITHUB_TOKEN (Settings, Actions, General).
+name: snapshot
+
+on:
+  schedule:
+    - cron: "30 3 * * *" # 03:30 UTC = 09:00 IST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Fetch snapshot
+        run: npm run fetch
+      - name: Test (model math and snapshot reconciliation)
+        run: npm test
+      - name: Build site
+        run: npm run build
+      - name: Commit snapshot
+        run: |
+          git config user.name "railwatch-bot"
+          git config user.email "railwatch-bot@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "No change in snapshot"
+          else
+            git commit -m "snapshot $(date -u +%F)"
+            git push
+          fi
