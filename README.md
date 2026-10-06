@@ -1,5 +1,7 @@
 # Rail Watch
 
+Live: https://rail-watch.vercel.app
+
 What it really costs to send dollars from a US bank account to an Indian one, by route, hop by hop, with every number cited.
 
 Rail Watch compares bank wires, remittance providers (Wise, Remitly, Western Union and others) and a USDC route (USD to USDC on Coinbase, on-chain on Base or Solana, sold for INR on CoinDCX). Every route is measured against one mid-market rate, and every fee, spread and tax is broken out as its own hop and tied to a dated entry in [`sources.yaml`](sources.yaml).
@@ -35,7 +37,9 @@ Comparison sites show the headline rate and fee, and stop there. A USD SWIFT wir
 
 ## Quickstart
 
-Needs Node 22.12 or newer and network access for the fetch step. No API keys, no env vars.
+To just read today's numbers, open [rail-watch.vercel.app](https://rail-watch.vercel.app). It redeploys from `main` whenever a new snapshot is committed, and serves the snapshot itself at [`/data/latest.json`](https://rail-watch.vercel.app/data/latest.json).
+
+To run it yourself: needs Node 22.12 or newer and network access for the fetch step. No API keys, no env vars.
 
 ```sh
 git clone https://github.com/agnij-dutta/railwatch.git
